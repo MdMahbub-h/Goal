@@ -1,0 +1,4 @@
+Done 1. The values in the cross bar to keep changing each second. Values are a range from 0.1 to 100.00.
+2. User places a stake before they play. Stake values are between 30 to 1000.
+3. The score when user plays and hits the bar is the value in the crossbar they hit X stake value placed.
+4. The total score is what they got in total according to number 3 above for each ball hit.
