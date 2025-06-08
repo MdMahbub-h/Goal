@@ -20,6 +20,7 @@ function CInterface() {
   var _iStep;
   var _fRequestFullScreen = null;
   var _fCancelFullScreen = null;
+  var _oStakeBoard;
 
   this._init = function () {
     _pStartPosGuiBox = { x: 0, y: 0 };
@@ -89,6 +90,7 @@ function CInterface() {
     }
 
     _oScoreBoard = new CScoreBoard(s_oStage);
+    _oStakeBoard = new CStakeBoard(s_oStage);
     _oLaunchBoard = new CLaunchBoard(s_oStage);
 
     _oHelpPanel = new CHelpPanel(s_oStage);
@@ -115,6 +117,11 @@ function CInterface() {
     _oScoreBoard.setPosScore(
       oPosScoreBoard.x + iNewX,
       oPosScoreBoard.y - iNewY
+    );
+    var oPosStakeBoard = _oStakeBoard.getStartPosScore();
+    _oStakeBoard.setPosScore(
+      oPosStakeBoard.x + iNewX,
+      oPosStakeBoard.y - iNewY
     );
 
     var oPosLaunchBoard = _oLaunchBoard.getStartPos();
@@ -171,6 +178,16 @@ function CInterface() {
     bEffect
   ) {
     _oScoreBoard.refreshTextScore(iScore);
+    if (bEffect) _oScoreBoard.effectAddScore(iScoreNoMult, fMultiplier);
+  };
+
+  this.refreshTextStakeBoard = function (
+    iScore,
+    fMultiplier,
+    iScoreNoMult,
+    bEffect
+  ) {
+    _oStakeBoard.refreshTextScore(iScore);
     if (bEffect) _oScoreBoard.effectAddScore(iScoreNoMult, fMultiplier);
   };
 

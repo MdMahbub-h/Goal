@@ -27,6 +27,7 @@ function CGame(oData) {
   var _bPoleCollide = false;
   var _iLevel = 1;
   var _iScore;
+  var _iStake;
   var _iLaunch = 0;
   var _iTimePressDown = 0;
   var _fTimeReset;
@@ -108,6 +109,7 @@ function CGame(oData) {
 
     _oInterface = new CInterface();
     _oInterface.refreshTextScoreBoard(0, 0, 0, false);
+
     _oInterface.refreshLaunchBoard(_iLaunch, NUM_OF_PENALTY);
 
     _vHitDir = new CANNON.Vec3(0, 0, 0);
@@ -158,6 +160,8 @@ function CGame(oData) {
     this.createControl();
     this.pause(false);
     this.showControlsHelp();
+    _iStake = Math.floor(Math.random() * (100 - 30) + 30);
+    _oInterface.refreshTextStakeBoard(_iStake, 1, 0, false);
   };
 
   this.poleCollide = function (oBallPos) {
@@ -185,9 +189,11 @@ function CGame(oData) {
 
     _oGoal.highlightCrossbar(iHighlightIndex);
 
-    _iScore += iAmount;
-
+    _iScore += iAmount * _iStake;
+    _iStake = Math.floor(Math.random() * (100 - 30) + 30);
     _oInterface.refreshTextScoreBoard(_iScore, 1, 0, false);
+    _oInterface.refreshTextStakeBoard(_iStake, 1, 0, false);
+
     _oInterface.createAnimText(
       TEXT_CONGRATULATION[iIndex],
       120,
@@ -372,6 +378,8 @@ function CGame(oData) {
   this.resetValues = function () {
     _iScore = 0;
     _oInterface.refreshTextScoreBoard(0, 0, 0, false);
+
+    _oInterface.refreshTextStakeBoard(0, 0, 0, false);
     _iLaunch = 0;
 
     _oInterface.refreshLaunchBoard(_iLaunch, NUM_OF_PENALTY);
