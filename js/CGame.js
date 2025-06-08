@@ -190,8 +190,8 @@ function CGame(oData) {
     _oGoal.highlightCrossbar(iHighlightIndex);
 
     _iScore += iAmount * _iStake;
-    _iStake = Math.floor(Math.random() * (100 - 30) + 30);
     _oInterface.refreshTextScoreBoard(_iScore, 1, 0, false);
+    _iStake = Math.floor(Math.random() * (100 - 30) + 30);
     _oInterface.refreshTextStakeBoard(_iStake, 1, 0, false);
 
     _oInterface.createAnimText(
@@ -393,6 +393,9 @@ function CGame(oData) {
     if (!_bGoal && !_bSaved && !_bPointScored) {
       _bGoal = true;
       _fTimeReset = TIME_RESET_AFTER_GOAL;
+
+      _iStake = Math.floor(Math.random() * (100 - 30) + 30);
+      _oInterface.refreshTextStakeBoard(_iStake, 1, 0, false);
 
       _oInterface.createAnimText(
         TEXT_BALL_OUT,
@@ -668,6 +671,9 @@ function CGame(oData) {
         _fTimeReset = TIME_RESET_AFTER_BALL_OUT;
         if (_bPoleCollide === false) {
           console.log("BALLOUT");
+          _iStake = Math.floor(Math.random() * (100 - 30) + 30);
+          _oInterface.refreshTextStakeBoard(_iStake, 1, 0, false);
+
           _oInterface.createAnimText(
             TEXT_BALL_OUT,
             90,
@@ -733,6 +739,8 @@ function CGame(oData) {
       if (oBallBody.velocity.lengthSquared() < 0.01) {
         //console.log("_bLaunched:"+ _bLaunched + "_bBallStoppedAfterLaunch:"+_bBallStoppedAfterLaunch + "_bBallOut:"+_bBallOut + "_bGoal:"+_bGoal)
         _bBallOut = true;
+        _iStake = Math.floor(Math.random() * (100 - 30) + 30);
+        _oInterface.refreshTextStakeBoard(_iStake, 1, 0, false);
         _oInterface.createAnimText(
           TEXT_BALL_OUT,
           90,
