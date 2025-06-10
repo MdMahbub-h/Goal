@@ -4,7 +4,7 @@ function CStakePanel(oParentContainer) {
   var _oBlue;
   var _oPlaceStake;
   var _oContainer;
-  var _iStake = 10000;
+  var _iStake = 10;
   var _oParentContainer = oParentContainer;
   var _oThis = this;
   var _stakes = [];
