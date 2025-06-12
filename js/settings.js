@@ -51,6 +51,8 @@ var MS_TIME_SWIPE_END = 1000;
 
 var MS_TIME_SWIPE_START = 3000;
 
+var MS_TIME_TO_SWIPE = 5000;
+
 var MS_TIME_FADE_HELP_TEXT = 500;
 
 var LOCALSTORAGE_STRING = ["crossbar_challenge_best_score"];
@@ -61,6 +63,8 @@ var TEXT_COLOR = "#fff";
 var TEXT_COLOR_1 = "#ff2222";
 
 var TEXT_COLOR_STROKE = "#116ee0";
+
+var TEXT_COLOR_STROKE2 = "#6e11e0";
 
 var OUTLINE_WIDTH = 1.5;
 

@@ -34,6 +34,11 @@ function CGame(oData) {
   var _fTimePoleReset;
   var _fTimeSwipe;
 
+  var _timeSwipe = MS_TIME_TO_SWIPE / 1000;
+  var _timerPause = true;
+  var _timerText;
+  var _timerTextStroke;
+
   var _aObjects;
   var _vHitDir;
 
@@ -139,6 +144,70 @@ function CGame(oData) {
     _oInterface.showHelpText();
   };
 
+  this.startTimerToShoot = function () {
+    _timerTextStroke = new CCTLText(
+      _oContainerGame,
+      CANVAS_WIDTH / 2 - 350,
+      CANVAS_HEIGHT_HALF - 160,
+      700,
+      70,
+      70,
+      "center",
+      TEXT_COLOR_1,
+      FONT_GAME,
+      1,
+      0,
+      0,
+      "5",
+      true,
+      true,
+      false,
+      false
+    );
+
+    _timerTextStroke.setOutline(4);
+
+    _timerText = new CCTLText(
+      _oContainerGame,
+      CANVAS_WIDTH / 2 - 350,
+      CANVAS_HEIGHT_HALF - 160,
+      700,
+      70,
+      70,
+      "center",
+      TEXT_COLOR,
+      FONT_GAME,
+      1,
+      0,
+      0,
+      "5",
+      true,
+      true,
+      false,
+      false
+    );
+
+    _timerTextStroke.refreshText("");
+    _timerText.refreshText("");
+    setInterval(() => {
+      if (!_timerPause) {
+        if (_timeSwipe > 0) {
+          _timerTextStroke.refreshText(_timeSwipe);
+          _timerText.refreshText(_timeSwipe);
+          _timeSwipe -= 1;
+        } else {
+          _timerText.refreshText("HIT TIME OUT");
+          _timerTextStroke.refreshText("HIT TIME OUT");
+          _timerPause = true;
+          this.endTurn();
+        }
+      } else {
+        _timerTextStroke.refreshText("");
+        _timerText.refreshText("");
+      }
+    }, 1200);
+  };
+
   this.sortDepth = function (oObj1, oObj2) {
     if (oObj1.getDepthPos() > oObj2.getDepthPos()) {
       if (
@@ -168,6 +237,9 @@ function CGame(oData) {
     this.createControl();
     this.pause(false);
     this.showControlsHelp();
+    _timerPause = false;
+    _timeSwipe = MS_TIME_TO_SWIPE / 1000;
+    this.startTimerToShoot();
   };
 
   this.poleCollide = function (oBallPos) {
@@ -383,9 +455,12 @@ function CGame(oData) {
     _iScore = 0;
     _oInterface.refreshTextScoreBoard(0, 0, 0, false);
 
-    _oInterface.refreshTextStakeBoard(0, 0, 0, false);
-    _iLaunch = 0;
+    _oInterface.refreshTextStakeBoard(_iStake, 0, 0, false);
 
+    _timerPause = false;
+    _timeSwipe = MS_TIME_TO_SWIPE / 1000;
+
+    _iLaunch = 0;
     _oInterface.refreshLaunchBoard(_iLaunch, NUM_OF_PENALTY);
   };
 
@@ -522,6 +597,31 @@ function CGame(oData) {
   this.endTurn = function () {
     _iLaunch++;
     _oInterface.refreshLaunchBoard(_iLaunch, NUM_OF_PENALTY);
+    _timerPause = false;
+    _timeSwipe = MS_TIME_TO_SWIPE / 1000;
+
+    if (_iLaunch < NUM_OF_PENALTY) {
+      this.resetScene();
+      _bLaunched = false;
+      _fTimeSwipe = MS_TIME_SWIPE_START;
+    } else {
+      _iGameState = STATE_FINISH;
+      _timerPause = true;
+
+      if (_iScore > s_iBestScore) {
+        // s_iBestScore = Math.floor(_iScore);
+        s_iBestScore = _iScore;
+        s_iBestScore = Number(s_iBestScore.toFixed(2));
+        saveItem(LOCALSTORAGE_STRING[LOCAL_BEST_SCORE], Math.floor(_iScore));
+        _oInterface.refreshBestScore();
+      }
+      _oInterface.createWinPanel(Math.floor(_iScore));
+    }
+  };
+
+  this.endTimer = function () {
+    _iLaunch--;
+    _oInterface.refreshLaunchBoard(_iLaunch, NUM_OF_PENALTY);
     if (_iLaunch < NUM_OF_PENALTY) {
       this.resetScene();
       _bLaunched = false;
@@ -530,7 +630,10 @@ function CGame(oData) {
       _iGameState = STATE_FINISH;
 
       if (_iScore > s_iBestScore) {
-        s_iBestScore = Math.floor(_iScore);
+        // s_iBestScore = Math.floor(_iScore);
+
+        s_iBestScore = _iScore;
+        s_iBestScore = Number(s_iBestScore.toFixed(2));
         saveItem(LOCALSTORAGE_STRING[LOCAL_BEST_SCORE], Math.floor(_iScore));
         _oInterface.refreshBestScore();
       }
@@ -680,6 +783,7 @@ function CGame(oData) {
             TEXT_COLOR_1,
             "#fff"
           );
+
           playSound("ball_saved", 1, false);
         }
       }
@@ -693,8 +797,10 @@ function CGame(oData) {
     }
 
     _bAnimPlayer = _oPlayer.animPlayer();
+    _timerPause = true;
     if (_oPlayer.getFrame() === SHOOT_FRAME) {
       this.addImpulseToBall({ x: _vHitDir.x, y: _vHitDir.y, z: _vHitDir.z });
+      _timeSwipe = MS_TIME_TO_SWIPE / 1000;
       _iTimePressDown = 0;
       this.goalAnimation(_vHitDir.y);
       _oInterface.unloadHelpText();
@@ -736,7 +842,6 @@ function CGame(oData) {
       var oBallBody = _oScene.ballBody();
 
       if (oBallBody.velocity.lengthSquared() < 0.01) {
-        //console.log("_bLaunched:"+ _bLaunched + "_bBallStoppedAfterLaunch:"+_bBallStoppedAfterLaunch + "_bBallOut:"+_bBallOut + "_bGoal:"+_bGoal)
         _bBallOut = true;
         _oInterface.createAnimText(
           TEXT_BALL_OUT,

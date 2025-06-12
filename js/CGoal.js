@@ -188,8 +188,28 @@ function CGoal(iX, iY, oSprite, oParentContainer) {
   setInterval(() => {
     for (let p = 0; p < _aCrossBarHighlights.length; p++) {
       let randomNumber = Math.floor(Math.random() * 1000) / 10;
-      _aCrossBarHighlights[p].updateText(randomNumber);
+      let occurrence = Math.floor(Math.random() * 1000);
+
+      if (occurrence >= 999) {
+        randomNumber = Math.floor(Math.random() * 1999) / 100 + 80;
+      } else if (occurrence >= 996) {
+        randomNumber = Math.floor(Math.random() * 1999) / 100 + 60;
+      } else if (occurrence >= 990) {
+        randomNumber = Math.floor(Math.random() * 1999) / 100 + 40;
+      } else if (occurrence >= 980) {
+        randomNumber = Math.floor(Math.random() * 1999) / 100 + 20;
+      } else if (occurrence >= 960) {
+        randomNumber = Math.floor(Math.random() * 999) / 100 + 10;
+      } else if (occurrence >= 910) {
+        randomNumber = Math.floor(Math.random() * 199) / 100 + 8;
+      } else if (occurrence >= 800) {
+        randomNumber = Math.floor(Math.random() * 299) / 100 + 5;
+      } else {
+        randomNumber = Math.floor(Math.random() * 499) / 100;
+      }
+      randomNumber = Number(randomNumber.toFixed(2));
       CROSSBAR_SCORE[p] = randomNumber;
+      _aCrossBarHighlights[p].updateText(randomNumber);
     }
   }, 1000);
 

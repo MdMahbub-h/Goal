@@ -13,6 +13,7 @@ function CInterface() {
   var _oWinPanel = null;
   var _oPause;
   var _oScoreBoard;
+  var _oPlayerAndHitBoard;
   var _oLaunchBoard;
   var _oHelpPanel;
   var _oHelpText;
@@ -90,6 +91,7 @@ function CInterface() {
     }
 
     _oScoreBoard = new CScoreBoard(s_oStage);
+    _oPlayerAndHitBoard = new CPlayerAndHitBoard(s_oStage);
     _oStakeBoard = new CStakeBoard(s_oStage);
     _oLaunchBoard = new CLaunchBoard(s_oStage);
 
@@ -122,6 +124,11 @@ function CInterface() {
     _oStakeBoard.setPosScore(
       oPosStakeBoard.x + iNewX,
       oPosStakeBoard.y - iNewY
+    );
+    var oPlayerAndHitBoard = _oPlayerAndHitBoard.getStartPosScore();
+    _oPlayerAndHitBoard.setPosScore(
+      oPlayerAndHitBoard.x + iNewX,
+      oPlayerAndHitBoard.y - iNewY
     );
 
     var oPosLaunchBoard = _oLaunchBoard.getStartPos();
@@ -188,6 +195,16 @@ function CInterface() {
     bEffect
   ) {
     _oStakeBoard.refreshTextScore(iScore);
+    if (bEffect) _oScoreBoard.effectAddScore(iScoreNoMult, fMultiplier);
+  };
+
+  this.refreshTextPlayerAndHitBoard = function (
+    iScore,
+    fMultiplier,
+    iScoreNoMult,
+    bEffect
+  ) {
+    _oPlayerAndHitBoard.refreshTextScore(iScore);
     if (bEffect) _oScoreBoard.effectAddScore(iScoreNoMult, fMultiplier);
   };
 
