@@ -1,74 +1,26 @@
 function CInterface() {
-  var _pStartPosAudio;
-  var _pStartPosExit;
-  var _pStartPosPause;
-  var _pStartPosGuiBox;
   var _pStartPosFullscreen;
 
-  var _oButExit;
-  var _oButPause;
   var _oButFullscreen;
 
-  var _oAudioToggle;
   var _oWinPanel = null;
-  var _oPause;
   var _oScoreBoard;
   var _oPlayerAndHitBoard;
   var _oLaunchBoard;
-  var _oHelpPanel;
   var _oHelpText;
 
   var _iStep;
+  var _iScore;
+  var _iStake;
   var _fRequestFullScreen = null;
   var _fCancelFullScreen = null;
   var _oStakeBoard;
 
   this._init = function () {
-    _pStartPosGuiBox = { x: 0, y: 0 };
-
-    var oSprite = s_oSpriteLibrary.getSprite("but_exit");
-    _pStartPosExit = {
-      x: CANVAS_WIDTH - oSprite.height / 2 - 10,
-      y: oSprite.height / 2 + 10,
-    };
-    _oButExit = new CGfxButton(_pStartPosExit.x, _pStartPosExit.y, oSprite);
-    _oButExit.addEventListener(ON_MOUSE_UP, this._onExit, this);
-
-    var oSprite = s_oSpriteLibrary.getSprite("but_pause");
-    _pStartPosPause = {
-      x: _pStartPosExit.x - oSprite.height - 10,
-      y: _pStartPosExit.y,
-    };
-    _oButPause = new CGfxButton(_pStartPosPause.x, _pStartPosPause.y, oSprite);
-    _oButPause.addEventListener(ON_MOUSE_UP, this.onButPauseRelease, this);
-
-    if (DISABLE_SOUND_MOBILE === false || s_bMobile === false) {
-      var oSprite = s_oSpriteLibrary.getSprite("audio_icon");
-      _pStartPosAudio = {
-        x: _pStartPosPause.x - oSprite.height - 10,
-        y: _pStartPosExit.y,
-      };
-      _oAudioToggle = new CToggle(
-        _pStartPosAudio.x,
-        _pStartPosAudio.y,
-        oSprite,
-        s_bAudioActive
-      );
-      _oAudioToggle.addEventListener(ON_MOUSE_UP, this._onAudioToggle, this);
-    }
-
     var doc = window.document;
     var docEl = doc.documentElement;
-    _fRequestFullScreen =
-      docEl.requestFullscreen ||
-      docEl.mozRequestFullScreen ||
-      docEl.webkitRequestFullScreen ||
-      docEl.msRequestFullscreen;
-    _fCancelFullScreen =
-      doc.exitFullscreen ||
-      doc.mozCancelFullScreen ||
-      doc.webkitExitFullscreen ||
-      doc.msExitFullscreen;
+    _fRequestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+    _fCancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
 
     if (ENABLE_FULLSCREEN === false) {
       _fRequestFullScreen = false;
@@ -80,65 +32,40 @@ function CInterface() {
         x: oSprite.width / 4 + 10,
         y: oSprite.height / 2 + 10,
       };
-      _oButFullscreen = new CToggle(
-        _pStartPosFullscreen.x,
-        _pStartPosFullscreen.y,
-        oSprite,
-        s_bFullscreen,
-        s_oStage
-      );
+      _oButFullscreen = new CToggle(_pStartPosFullscreen.x, _pStartPosFullscreen.y, oSprite, s_bFullscreen, s_oStage);
       _oButFullscreen.addEventListener(ON_MOUSE_UP, this._onFullscreen, this);
     }
 
+    const _backdrop = new createjs.Shape();
+    _backdrop.graphics.beginFill("rgba(0,0,0,0.5)").drawRect(0, CANVAS_HEIGHT - 230, CANVAS_WIDTH, 230);
+    s_oStage.addChild(_backdrop);
+
+    _oStakeBoard = new CStakeBoard(s_oStage);
     _oScoreBoard = new CScoreBoard(s_oStage);
     _oPlayerAndHitBoard = new CPlayerAndHitBoard(s_oStage);
-    _oStakeBoard = new CStakeBoard(s_oStage);
     _oLaunchBoard = new CLaunchBoard(s_oStage);
 
-    _oHelpPanel = new CHelpPanel(s_oStage);
-    _oHelpPanel.show();
+    // _oHelpPanel = new CHelpPanel(s_oStage);
+    // _oHelpPanel.show();
+
+    s_oGame.onExitHelp();
 
     this.refreshButtonPos(s_iOffsetX, s_iOffsetY);
   };
 
   this.refreshButtonPos = function (iNewX, iNewY) {
-    _oButExit.setPosition(_pStartPosExit.x - iNewX, iNewY + _pStartPosExit.y);
-    _oButPause.setPosition(
-      _pStartPosPause.x - iNewX,
-      iNewY + _pStartPosPause.y
-    );
-
-    if (DISABLE_SOUND_MOBILE === false || s_bMobile === false) {
-      _oAudioToggle.setPosition(
-        _pStartPosAudio.x - iNewX,
-        iNewY + _pStartPosAudio.y
-      );
-    }
-
     var oPosScoreBoard = _oScoreBoard.getStartPosScore();
-    _oScoreBoard.setPosScore(
-      oPosScoreBoard.x + iNewX,
-      oPosScoreBoard.y - iNewY
-    );
+    _oScoreBoard.setPosScore(oPosScoreBoard.x + iNewX, oPosScoreBoard.y - iNewY);
     var oPosStakeBoard = _oStakeBoard.getStartPosScore();
-    _oStakeBoard.setPosScore(
-      oPosStakeBoard.x + iNewX,
-      oPosStakeBoard.y - iNewY
-    );
+    _oStakeBoard.setPosScore(oPosStakeBoard.x + iNewX, oPosStakeBoard.y - iNewY);
     var oPlayerAndHitBoard = _oPlayerAndHitBoard.getStartPosScore();
-    _oPlayerAndHitBoard.setPosScore(
-      oPlayerAndHitBoard.x + iNewX,
-      oPlayerAndHitBoard.y - iNewY
-    );
+    _oPlayerAndHitBoard.setPosScore(oPlayerAndHitBoard.x + iNewX, oPlayerAndHitBoard.y - iNewY);
 
     var oPosLaunchBoard = _oLaunchBoard.getStartPos();
     _oLaunchBoard.setPos(oPosLaunchBoard.x - iNewX, oPosLaunchBoard.y - iNewY);
 
     if (_fRequestFullScreen && screenfull.isEnabled) {
-      _oButFullscreen.setPosition(
-        _pStartPosFullscreen.x + iNewX,
-        _pStartPosFullscreen.y + iNewY
-      );
+      _oButFullscreen.setPosition(_pStartPosFullscreen.x + iNewX, _pStartPosFullscreen.y + iNewY);
     }
   };
 
@@ -150,20 +77,12 @@ function CInterface() {
   };
 
   this.unload = function () {
-    _oButExit.unload();
-    _oButExit = null;
-
-    if (DISABLE_SOUND_MOBILE === false || s_bMobile === false) {
-      _oAudioToggle.unload();
-      _oAudioToggle = null;
-    }
-
     if (_fRequestFullScreen && screenfull.isEnabled) {
       _oButFullscreen.unload();
       _oButFullscreen = null;
     }
 
-    _oHelpPanel.unload();
+    // _oHelpPanel.unload();
 
     s_oInterface = null;
   };
@@ -173,43 +92,21 @@ function CInterface() {
     _oHelpText.fadeAnim(1, null);
   };
 
-  this.createWinPanel = function (iScore) {
-    _oWinPanel = new CWinPanel(s_oSpriteLibrary.getSprite("msg_box"));
-    _oWinPanel.show(iScore);
+  this.createWinPanel = function (iScore, iStake) {
+    _oWinPanel = new CWinPanel(s_oStage);
+    _oWinPanel.show(iScore, iStake);
   };
 
-  this.refreshTextScoreBoard = function (
-    iScore,
-    fMultiplier,
-    iScoreNoMult,
-    bEffect
-  ) {
+  this.refreshTextScoreBoard = function (iScore, fMultiplier, iScoreNoMult, bEffect) {
+    _iScore = iScore;
     _oScoreBoard.refreshTextScore(iScore);
     if (bEffect) _oScoreBoard.effectAddScore(iScoreNoMult, fMultiplier);
   };
 
-  this.refreshTextStakeBoard = function (
-    iScore,
-    fMultiplier,
-    iScoreNoMult,
-    bEffect
-  ) {
-    _oStakeBoard.refreshTextScore(iScore);
+  this.refreshTextStakeBoard = function (iStake, fMultiplier, iScoreNoMult, bEffect) {
+    _iStake = iStake;
+    _oStakeBoard.refreshTextStake(iStake);
     if (bEffect) _oScoreBoard.effectAddScore(iScoreNoMult, fMultiplier);
-  };
-
-  this.refreshTextPlayerAndHitBoard = function (
-    iScore,
-    fMultiplier,
-    iScoreNoMult,
-    bEffect
-  ) {
-    _oPlayerAndHitBoard.refreshTextScore(iScore);
-    if (bEffect) _oScoreBoard.effectAddScore(iScoreNoMult, fMultiplier);
-  };
-
-  this.refreshBestScore = function () {
-    _oScoreBoard.refreshBestScore();
   };
 
   this.resetFullscreenBut = function () {
@@ -228,60 +125,11 @@ function CInterface() {
     sizeHandler();
   };
 
-  this.createAnimText = function (
-    szText,
-    iSize,
-    bStrobo,
-    szColor,
-    szColorStroke
-  ) {
-    //TEXT_BALL_OUT, 90, false, TEXT_COLOR_1, TEXT_COLOR_STROKE
+  this.createAnimText = function (szText, iSize, bStrobo, szColor) {
     var oContainer = new createjs.Container();
-
-    var oTextStroke = new CCTLText(
-      oContainer,
-      -300,
-      0,
-      600,
-      iSize,
-      iSize,
-      "center",
-      szColorStroke,
-      SECONDARY_FONT,
-      1,
-      0,
-      0,
-      szText,
-      true,
-      true,
-      true,
-      false
-    );
-
-    oTextStroke.setOutline(4);
-
-    var oText = new CCTLText(
-      oContainer,
-      -300,
-      0,
-      600,
-      iSize,
-      iSize,
-      "center",
-      szColor,
-      SECONDARY_FONT,
-      1,
-      0,
-      0,
-      szText,
-      true,
-      true,
-      true,
-      false
-    );
+    var oText = new CCTLText(oContainer, -300, 0, 600, iSize, iSize, "center", szColor, SECONDARY_FONT, 1, 0, 0, szText, true, true, true, false);
 
     oContainer.x = CANVAS_WIDTH_HALF;
-    // oContainer.y = -oTextStroke.getBounds().height;
     oContainer.y = -114;
 
     if (bStrobo) {
@@ -321,26 +169,6 @@ function CInterface() {
 
   this.refreshLaunchBoard = function (iLaunch, iMaxLaunch) {
     _oLaunchBoard.refreshTextLaunch(iLaunch, iMaxLaunch);
-  };
-
-  this._onAudioToggle = function () {
-    Howler.mute(s_bAudioActive);
-    s_bAudioActive = !s_bAudioActive;
-  };
-
-  this._onExit = function () {
-    var _oAreYouSure = new CAreYouSurePanel(s_oStage);
-    _oAreYouSure.show();
-  };
-
-  this.unloadPause = function () {
-    _oPause.unload();
-    _oPause = null;
-  };
-
-  this.onButPauseRelease = function () {
-    playSound("click", 1, false);
-    _oPause = new CPause();
   };
 
   s_oInterface = this;

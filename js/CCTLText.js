@@ -5,16 +5,11 @@ CCTLText.prototype = {
     if (this._bFitText) {
       var iFontSize = this._iFontSize;
 
-      while (
-        this._oText.getBounds().height > this._iHeight - this._iPaddingV * 2 ||
-        this._oText.getBounds().width > this._iWidth - this._iPaddingH * 2
-      ) {
+      while (this._oText.getBounds().height > this._iHeight - this._iPaddingV * 2 || this._oText.getBounds().width > this._iWidth - this._iPaddingH * 2) {
         iFontSize--;
 
         this._oText.font = iFontSize + "px " + this._szFont;
-        this._oText.lineHeight = Math.round(
-          iFontSize * this._fLineHeightFactor
-        );
+        this._oText.lineHeight = Math.round(iFontSize * this._fLineHeightFactor);
 
         this.__updateY();
         this.__verticalAlign();
@@ -41,9 +36,7 @@ CCTLText.prototype = {
     switch (this._oText.textBaseline) {
       case "middle":
         {
-          this._oText.y +=
-            this._oText.lineHeight / 2 +
-            (this._iFontSize * this._fLineHeightFactor - this._iFontSize);
+          this._oText.y += this._oText.lineHeight / 2 + (this._iFontSize * this._fLineHeightFactor - this._iFontSize);
         }
         break;
     }
@@ -52,21 +45,13 @@ CCTLText.prototype = {
   __createText: function (szMsg) {
     if (this._bDebug) {
       this._oDebugShape = new createjs.Shape();
-      this._oDebugShape.graphics
-        .beginFill("rgba(255,0,0,0.5)")
-        .drawRect(this._x, this._y, this._iWidth, this._iHeight);
+      this._oDebugShape.graphics.beginFill("rgba(255,0,0,0.5)").drawRect(this._x, this._y, this._iWidth, this._iHeight);
       this._oContainer.addChild(this._oDebugShape);
     }
 
-    this._oText = new createjs.Text(
-      szMsg,
-      this._iFontSize + "px " + this._szFont,
-      this._szColor
-    );
+    this._oText = new createjs.Text(szMsg, this._iFontSize + "px " + this._szFont, this._szColor);
     this._oText.textBaseline = "middle";
-    this._oText.lineHeight = Math.round(
-      this._iFontSize * this._fLineHeightFactor
-    );
+    this._oText.lineHeight = Math.round(this._iFontSize * this._fLineHeightFactor);
     this._oText.textAlign = this._szAlign;
 
     if (this._bMultiline) {
@@ -110,12 +95,7 @@ CCTLText.prototype = {
 
   setShadow: function (szColor, iOffsetX, iOffsetY, iBlur) {
     if (this._oText !== null) {
-      this._oText.shadow = new createjs.Shadow(
-        szColor,
-        iOffsetX,
-        iOffsetY,
-        iBlur
-      );
+      this._oText.shadow = new createjs.Shadow(szColor, iOffsetX, iOffsetY, iBlur);
     }
   },
 
@@ -176,9 +156,7 @@ CCTLText.prototype = {
     this._oText.text = szMsg;
 
     this._oText.font = this._iFontSize + "px " + this._szFont;
-    this._oText.lineHeight = Math.round(
-      this._iFontSize * this._fLineHeightFactor
-    );
+    this._oText.lineHeight = Math.round(this._iFontSize * this._fLineHeightFactor);
 
     this.__autofit();
     this.__updateY();
@@ -212,8 +190,6 @@ function CCTLText(
   this._iWidth = iWidth;
   this._iHeight = iHeight;
 
-  this._bMultiline = bMultiline;
-
   this._iFontSize = iFontSize;
   this._szAlign = szAlign;
   this._szColor = szColor;
@@ -221,9 +197,11 @@ function CCTLText(
 
   this._iPaddingH = iPaddingH;
   this._iPaddingV = iPaddingV;
+  this._szMsg = szMsg;
 
-  this._bVerticalAlign = bVerticalAlign;
   this._bFitText = bFitText;
+  this._bVerticalAlign = bVerticalAlign;
+  this._bMultiline = bMultiline;
   this._bDebug = bDebug;
 
   // RESERVED

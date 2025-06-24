@@ -1,172 +1,67 @@
-function CWinPanel(oSpriteBg) {
+function CWinPanel(oParentContainer) {
+  var _oFade;
+  var _oTitleText;
+  var _oContainer;
+  var _oParentContainer = oParentContainer;
 
-    var _oBg;
-    var _oTitleTextStoke;
-    var _oTitleText;
-    var _oNewScoreTextStroke;
-    var _oNewScoreText;
-    var _oBestScoreTextStroke;
-    var _oBestScoreText;
-    var _oGroup;
-    var _oButMenu;
-    var _oButRestart;
-    var _oFlagContainer;
+  this._init = function () {
+    _oContainer = new createjs.Container();
+    _oContainer.x = CANVAS_WIDTH / 2;
+    _oContainer.y = CANVAS_HEIGHT / 2;
+    _oContainer.alpha = 0;
+    _oContainer.visible = false;
+    _oParentContainer.addChild(_oContainer);
 
-    this._init = function (oSpriteBg) {
-        var iSizeFontSecondaryText = 50;
+    _oFade = new createjs.Shape();
+    _oFade.graphics.beginFill("rgba(0,0,0,0.7)").drawRoundRect(-250, -160, 500, 200, 10);
+    _oFade.alpha = 0.7;
+    _oContainer.addChild(_oFade);
 
-        _oGroup = new createjs.Container();
-        _oGroup.alpha = 0;
-        _oGroup.visible = false;
+    _oTitleText = new CCTLText(_oContainer, -220, -110, 440, 80, 80, "center", TEXT_COLOR, SECONDARY_FONT, 1, 0, 0, " ", true, true, true, false);
+  };
 
-        var oFade = new createjs.Shape();
-        oFade.graphics.beginFill("black").drawRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        oFade.alpha = 0.5;
-        _oGroup.addChild(oFade);
+  this.unload = function () {
+    s_oStage.removeChild(_oContainer);
+  };
 
-        _oBg = createBitmap(oSpriteBg);
-        _oBg.x = CANVAS_WIDTH_HALF;
-        _oBg.y = CANVAS_HEIGHT_HALF;
-        _oBg.regX = oSpriteBg.width * 0.5;
-        _oBg.regY = oSpriteBg.height * 0.5;
-        _oGroup.addChild(_oBg);
+  this.show = function (iScore, iStake) {
+    if (iScore >= iStake) {
+      _oTitleText.setColor(TEXT_COLOR_2);
+      _oTitleText.refreshText("Game Won");
+    } else {
+      _oTitleText.setColor(TEXT_COLOR_1);
+      _oTitleText.refreshText("Game Lost");
+    }
+    _oContainer.visible = true;
 
-        _oTitleTextStoke = new CCTLText(_oGroup, 
-                    CANVAS_WIDTH/2-270, CANVAS_HEIGHT_HALF-160, 540, 80, 
-                    80, "center", TEXT_COLOR_STROKE, FONT_GAME, 1,
-                    0, 0,
-                    " ",
-                    true, true, true,
-                    false );
+    createjs.Tween.get(_oContainer)
+      .wait(MS_WAIT_SHOW_GAME_OVER_PANEL)
+      .to({ alpha: 1 }, 1250, createjs.Ease.cubicOut)
+      .call(function () {
+        $(s_oMain).trigger("show_interlevel_ad");
+      });
 
-        _oTitleTextStoke.setOutline(5);
-        
-        _oTitleText = new CCTLText(_oGroup, 
-                    CANVAS_WIDTH/2-270, CANVAS_HEIGHT_HALF-160, 540, 80, 
-                    80, "center", TEXT_COLOR, FONT_GAME, 1,
-                    0, 0,
-                    " ",
-                    true, true, true,
-                    false );
+    setTimeout(() => {
+      this._onRestart();
+    }, 2000);
+  };
 
-        _oNewScoreTextStroke = new CCTLText(_oGroup, 
-                    CANVAS_WIDTH/2-270, CANVAS_HEIGHT_HALF-50, 540, iSizeFontSecondaryText, 
-                    iSizeFontSecondaryText, "center", TEXT_COLOR_STROKE, FONT_GAME, 1,
-                    0, 0,
-                    " ",
-                    true, true, true,
-                    false );
-                    
-        _oNewScoreTextStroke.setOutline(4);
-        
-        _oNewScoreText =new CCTLText(_oGroup, 
-                    CANVAS_WIDTH/2-270, CANVAS_HEIGHT_HALF-50, 540, iSizeFontSecondaryText, 
-                    iSizeFontSecondaryText, "center", TEXT_COLOR, FONT_GAME, 1,
-                    0, 0,
-                    " ",
-                    true, true, true,
-                    false )
+  this._onContinue = function () {
+    var oParent = this;
+    createjs.Tween.get(_oContainer, { override: true })
+      .to({ alpha: 0 }, 750, createjs.Ease.cubicOut)
+      .call(function () {
+        oParent.unload();
+      });
+    s_oGame.onContinue();
+  };
 
-        _oBestScoreTextStroke = new CCTLText(_oGroup, 
-                    CANVAS_WIDTH/2-200, CANVAS_HEIGHT_HALF+50, 400, iSizeFontSecondaryText, 
-                    iSizeFontSecondaryText, "center", TEXT_COLOR_STROKE, FONT_GAME, 1,
-                    0, 0,
-                    " ",
-                    true, true, true,
-                    false );
-                    
-        _oBestScoreTextStroke.setOutline(4);
+  this._onRestart = function () {
+    this.unload();
+    s_oGame.resetGame();
+  };
 
-        _oBestScoreText = new CCTLText(_oGroup, 
-                    CANVAS_WIDTH/2-200, CANVAS_HEIGHT_HALF+50, 400, iSizeFontSecondaryText, 
-                    iSizeFontSecondaryText, "center", TEXT_COLOR, FONT_GAME, 1,
-                    0, 0,
-                    " ",
-                    true, true, true,
-                    false );
+  this._init();
 
-
-
-        var oSpriteButRestart = s_oSpriteLibrary.getSprite("but_restart");
-        _oButRestart = new CGfxButton(CANVAS_WIDTH * 0.5 + 250, CANVAS_HEIGHT * 0.5 + 120, oSpriteButRestart, _oGroup);
-        _oButRestart.pulseAnimation();
-        _oButRestart.addEventListener(ON_MOUSE_DOWN, this._onRestart, this);
-
-        var oSpriteButHome = s_oSpriteLibrary.getSprite("but_home");
-        _oButMenu = new CGfxButton(CANVAS_WIDTH * 0.5 - 250, CANVAS_HEIGHT * 0.5 + 120, oSpriteButHome, _oGroup);
-        _oButMenu.addEventListener(ON_MOUSE_DOWN, this._onExit, this);
-
-        _oFlagContainer = new createjs.Container();
-
-        _oGroup.addChild(_oFlagContainer);
-
-        _oGroup.on("click", function () {});
-
-        s_oStage.addChild(_oGroup);
-
-    };
-
-    this.unload = function () {
-        _oGroup.removeAllEventListeners();
-        s_oStage.removeChild(_oGroup);
-        if (_oButMenu) {
-            _oButMenu.unload();
-            _oButMenu = null;
-        }
-
-        if (_oButRestart) {
-            _oButRestart.unload();
-            _oButRestart = null;
-        }
-
-    };
-
-    this.show = function (iScore) {
-        _oTitleTextStoke.refreshText(TEXT_GAMEOVER);
-        _oTitleText.refreshText(TEXT_GAMEOVER);
-
-        _oNewScoreTextStroke.refreshText(TEXT_SCORE + ": " + iScore);
-        _oNewScoreText.refreshText(TEXT_SCORE + ": " + iScore);
-
-        _oBestScoreTextStroke.refreshText(TEXT_BEST_SCORE + ": " + s_iBestScore);
-        _oBestScoreText.refreshText(TEXT_BEST_SCORE + ": " + s_iBestScore);
-
-        _oGroup.visible = true;
-
-        createjs.Tween.get(_oGroup).wait(MS_WAIT_SHOW_GAME_OVER_PANEL).to({alpha: 1}, 1250, createjs.Ease.cubicOut).call(function () {
-                $(s_oMain).trigger("show_interlevel_ad");
-
-        });
-
-        $(s_oMain).trigger("save_score", iScore);
-        $(s_oMain).trigger("share_event", iScore);
-    };
-
-    this._onContinue = function () {
-        var oParent = this;
-        createjs.Tween.get(_oGroup, {override: true}).to({alpha: 0}, 750, createjs.Ease.cubicOut).call(function () {
-            oParent.unload();
-        });
-
-        _oButContinue.block(true);
-        _oButMenu.block(true);
-        s_oGame.onContinue();
-    };
-
-    this._onRestart = function () {
-        _oButRestart.block(true);
-        this.unload();
-        s_oGame.restartGame();
-    };
-
-    this._onExit = function () {
-
-        this.unload();
-
-        s_oGame.onExit();
-    };
-
-    this._init(oSpriteBg);
-
-    return this;
+  return this;
 }

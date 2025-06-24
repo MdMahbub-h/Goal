@@ -37,7 +37,9 @@ function CGame(oData) {
   var _timeSwipe = MS_TIME_TO_SWIPE / 1000;
   var _timerPause = true;
   var _timerText;
-  var _timerTextStroke;
+  var _intervalTimer;
+
+  var _isFirstTime = true;
 
   var _aObjects;
   var _vHitDir;
@@ -73,7 +75,7 @@ function CGame(oData) {
     }
 
     var oSprite = s_oSpriteLibrary.getSprite("goal");
-    _oGoal = new CGoal(291, 28 + OFFSET_Y, oSprite, _oContainerGame);
+    _oGoal = new CGoal(295, 10 + OFFSET_Y, oSprite, _oContainerGame);
 
     var oSpriteBall = s_oSpriteLibrary.getSprite("ball");
     _oBall = new CBall(0, 0, oSpriteBall, _oScene.ballBody(), _oContainerGame);
@@ -85,11 +87,7 @@ function CGame(oData) {
 
     _fTimeSwipe = MS_TIME_SWIPE_START;
 
-    _oStartBall = new CStartBall(
-      CANVAS_WIDTH_HALF + 55,
-      CANVAS_HEIGHT_HALF + 168,
-      _oContainerGame
-    );
+    _oStartBall = new CStartBall(CANVAS_WIDTH_HALF + 55, CANVAS_HEIGHT_HALF + 168, _oContainerGame);
 
     _oPlayer = new CPlayer(CANVAS_WIDTH_HALF - 150, -360, _oContainerGame);
     _oPlayer.setVisible(false);
@@ -102,12 +100,7 @@ function CGame(oData) {
       TIME_SWIPE = 500;
     }
 
-    _oHandSwipeAnim = new CHandSwipeAnim(
-      START_HAND_SWIPE_POS,
-      END_HAND_SWIPE_POS,
-      s_oSpriteLibrary.getSprite(szImage),
-      s_oStage
-    );
+    _oHandSwipeAnim = new CHandSwipeAnim(START_HAND_SWIPE_POS, END_HAND_SWIPE_POS, s_oSpriteLibrary.getSprite(szImage), s_oStage);
 
     resizeCanvas3D();
 
@@ -124,9 +117,7 @@ function CGame(oData) {
   this.createControl = function () {
     if (!SHOW_3D_RENDER) {
       _oHitArea = new createjs.Shape();
-      _oHitArea.graphics
-        .beginFill("rgba(255,0,0,0.01)")
-        .drawRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      _oHitArea.graphics.beginFill("rgba(255,0,0,0.01)").drawRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
       _oContainerGame.addChild(_oHitArea);
 
       _oListenerDown = _oHitArea.on("mousedown", this.onMouseDown);
@@ -145,28 +136,6 @@ function CGame(oData) {
   };
 
   this.startTimerToShoot = function () {
-    _timerTextStroke = new CCTLText(
-      _oContainerGame,
-      CANVAS_WIDTH / 2 - 350,
-      CANVAS_HEIGHT_HALF - 160,
-      700,
-      70,
-      70,
-      "center",
-      TEXT_COLOR_1,
-      FONT_GAME,
-      1,
-      0,
-      0,
-      "5",
-      true,
-      true,
-      false,
-      false
-    );
-
-    _timerTextStroke.setOutline(4);
-
     _timerText = new CCTLText(
       _oContainerGame,
       CANVAS_WIDTH / 2 - 350,
@@ -176,51 +145,39 @@ function CGame(oData) {
       70,
       "center",
       TEXT_COLOR,
-      FONT_GAME,
+      SECONDARY_FONT,
       1,
       0,
       0,
-      "5",
+      "",
       true,
       true,
       false,
       false
     );
-
-    _timerTextStroke.refreshText("");
-    _timerText.refreshText("");
-    setInterval(() => {
+    _intervalTimer = setInterval(() => {
       if (!_timerPause) {
         if (_timeSwipe > 0) {
-          _timerTextStroke.refreshText(_timeSwipe);
           _timerText.refreshText(_timeSwipe);
           _timeSwipe -= 1;
         } else {
-          _timerText.refreshText("HIT TIME OUT");
-          _timerTextStroke.refreshText("HIT TIME OUT");
+          _timerText.refreshText("Hit Time Out");
           _timerPause = true;
           this.endTurn();
         }
       } else {
-        _timerTextStroke.refreshText("");
         _timerText.refreshText("");
       }
-    }, 1200);
+    }, 1000);
   };
 
   this.sortDepth = function (oObj1, oObj2) {
     if (oObj1.getDepthPos() > oObj2.getDepthPos()) {
-      if (
-        _oContainerGame.getChildIndex(oObj1.getObject()) >
-        _oContainerGame.getChildIndex(oObj2.getObject())
-      ) {
+      if (_oContainerGame.getChildIndex(oObj1.getObject()) > _oContainerGame.getChildIndex(oObj2.getObject())) {
         _oContainerGame.swapChildren(oObj1.getObject(), oObj2.getObject());
       }
     } else if (oObj1.getDepthPos() < oObj2.getDepthPos()) {
-      if (
-        _oContainerGame.getChildIndex(oObj2.getObject()) >
-        _oContainerGame.getChildIndex(oObj1.getObject())
-      ) {
+      if (_oContainerGame.getChildIndex(oObj2.getObject()) > _oContainerGame.getChildIndex(oObj1.getObject())) {
         _oContainerGame.swapChildren(oObj2.getObject(), oObj1.getObject());
       }
     }
@@ -233,12 +190,15 @@ function CGame(oData) {
 
   this.onExitStake = function (stake) {
     _iStake = stake;
+    if (_isFirstTime) {
+      _isFirstTime = false;
+      this.createControl();
+      this.showControlsHelp();
+    }
     _oInterface.refreshTextStakeBoard(_iStake, 1, 0, false);
-    this.createControl();
-    this.pause(false);
-    this.showControlsHelp();
-    _timerPause = false;
     _timeSwipe = MS_TIME_TO_SWIPE / 1000;
+    _timerPause = false;
+    _iGameState = STATE_PLAY;
     this.startTimerToShoot();
   };
 
@@ -261,7 +221,7 @@ function CGame(oData) {
     _bPointScored = true;
 
     var iHighlightIndex = _oGoal.getPoleIndexByPos(_oBall.getX());
-    var iIndex = Math.floor(Math.random() * 9);
+    var iIndex = Math.floor(Math.random() * 3);
 
     var iAmount = CROSSBAR_SCORE[iHighlightIndex];
 
@@ -270,13 +230,7 @@ function CGame(oData) {
     _iScore += iAmount * _iStake;
     _oInterface.refreshTextScoreBoard(_iScore, 1, 0, false);
 
-    _oInterface.createAnimText(
-      TEXT_CONGRATULATION[iIndex],
-      120,
-      false,
-      TEXT_COLOR,
-      "#116ee0"
-    );
+    _oInterface.createAnimText(TEXT_CONGRATULATION[iIndex], 120, false, TEXT_COLOR, "#116ee0");
   };
 
   this.fieldCollision = function () {
@@ -295,9 +249,7 @@ function CGame(oData) {
 
     var oPos2DBall = this.convert3dPosTo2dScreen(oBallBody.position, _oCamera);
 
-    var fScaleDistance =
-      oPos2DBall.z * (BALL_SCALE_FACTOR - _oBall.getStartScale()) +
-      _oBall.getStartScale();
+    var fScaleDistance = oPos2DBall.z * (BALL_SCALE_FACTOR - _oBall.getStartScale()) + _oBall.getStartScale();
 
     _oBall.setPosition(oPos2DBall.x, oPos2DBall.y);
     _oBall.scale(fScaleDistance);
@@ -306,7 +258,7 @@ function CGame(oData) {
   };
 
   this.onMouseDown = function (e) {
-    if (_bLaunched) {
+    if (_bLaunched || _iGameState === STATE_PAUSE) {
       return;
     }
     _fTimeSwipe = MS_TIME_SWIPE_START;
@@ -317,21 +269,21 @@ function CGame(oData) {
   };
 
   this.onPressMove = function () {
+    if (_iGameState === STATE_PAUSE) return;
+
     _oReleasePoint = { x: s_oStage.mouseX, y: s_oStage.mouseY };
     _iTimePressDown += s_iTimeElaps;
   };
 
   this.onPressUp = function () {
+    if (_iGameState === STATE_PAUSE) return;
+
     if (_bLaunched || _oReleasePoint === null) {
       return;
-    } else if (
-      _oClickPoint.y < _oReleasePoint.y ||
-      (_oReleasePoint.x === 0 && _oReleasePoint.y === 0)
-    ) {
+    } else if (_oClickPoint.y < _oReleasePoint.y || (_oReleasePoint.x === 0 && _oReleasePoint.y === 0)) {
       return;
     }
-    var fDistance =
-      Math.ceil(distanceV2(_oClickPoint, _oReleasePoint)) * FORCE_RATE;
+    var fDistance = Math.ceil(distanceV2(_oClickPoint, _oReleasePoint)) * FORCE_RATE;
 
     if (fDistance > FORCE_MAX) {
       fDistance = FORCE_MAX;
@@ -342,10 +294,7 @@ function CGame(oData) {
       return;
     }
 
-    var vHitDir2D = new CVector2(
-      _oClickPoint.x - _oReleasePoint.x,
-      _oClickPoint.y - _oReleasePoint.y
-    );
+    var vHitDir2D = new CVector2(_oClickPoint.x - _oReleasePoint.x, _oClickPoint.y - _oReleasePoint.y);
 
     vHitDir2D.scalarProduct(fDistance);
 
@@ -379,8 +328,7 @@ function CGame(oData) {
       }
 
       var iDirY = fForceY;
-      var iDirZ =
-        vHitDir2D.getY() * FORCE_MULTIPLIER_AXIS.z + 0.2 * Math.abs(iDirX);
+      var iDirZ = vHitDir2D.getY() * FORCE_MULTIPLIER_AXIS.z + 0.2 * Math.abs(iDirX);
 
       if (iDirZ < 11.6 && iDirZ > 8.7) {
         if (s_bMobile) {
@@ -415,10 +363,7 @@ function CGame(oData) {
 
     var oPos2dShadow = this.convert3dPosTo2dScreen(oPosShadow, _oCamera);
 
-    var fDistance =
-      (oBody.position.z - BALL_RADIUS) *
-        (oFieldBody.position.z - SHADOWN_FACTOR - oFieldBody.position.z) +
-      oFieldBody.position.z;
+    var fDistance = (oBody.position.z - BALL_RADIUS) * (oFieldBody.position.z - SHADOWN_FACTOR - oFieldBody.position.z) + oFieldBody.position.z;
 
     var fScaleHeight = fDistance * fScaleDistance;
 
@@ -473,13 +418,7 @@ function CGame(oData) {
       _bGoal = true;
       _fTimeReset = TIME_RESET_AFTER_GOAL;
 
-      _oInterface.createAnimText(
-        TEXT_BALL_OUT,
-        90,
-        false,
-        TEXT_COLOR_1,
-        "#fff"
-      );
+      _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, TEXT_COLOR_1, "#ffffff");
     }
   };
 
@@ -497,15 +436,6 @@ function CGame(oData) {
     playSound("kick", 1, false);
   };
 
-  this.pause = function (bVal) {
-    if (bVal) {
-      _iGameState = STATE_PAUSE;
-    } else {
-      _iGameState = STATE_PLAY;
-    }
-    createjs.Ticker.paused = bVal;
-  };
-
   this.onExit = function () {
     this.unload();
 
@@ -515,9 +445,14 @@ function CGame(oData) {
     s_oMain.gotoMenu();
   };
 
+  this.getRandomIntBetween = function (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
   this.resetBallPosition = function () {
     var oBallBody = _oScene.ballBody();
 
+    POSITION_BALL.x = this.getRandomIntBetween(-3, 3);
     oBallBody.position.set(POSITION_BALL.x, POSITION_BALL.y, POSITION_BALL.z);
     _oScene.setElementVelocity(oBallBody, { x: 0, y: 0, z: 0 });
     _oScene.setElementAngularVelocity(oBallBody, { x: 0, y: 0, z: 0 });
@@ -525,6 +460,7 @@ function CGame(oData) {
     _oBall.fadeAnimation(1, 500, 0);
     _oBall.setVisible(false);
 
+    _oStartBall.setPosition(CANVAS_WIDTH_HALF + POSITION_BALL.x * 90, CANVAS_HEIGHT_HALF + 168);
     _oStartBall.setVisible(true);
     _oStartBall.setAlpha(0);
     _oStartBall.fadeAnim(1, 500, 0);
@@ -587,6 +523,16 @@ function CGame(oData) {
     }
   };
 
+  this.resetGame = function () {
+    this.resetValues();
+    this.resetScene();
+    _iGameState = STATE_PAUSE;
+    _bLaunched = false;
+    _timerPause = true;
+    clearInterval(_intervalTimer);
+    _oStakePanel.show();
+  };
+
   this.restartGame = function () {
     this.resetValues();
     this.resetScene();
@@ -607,15 +553,14 @@ function CGame(oData) {
     } else {
       _iGameState = STATE_FINISH;
       _timerPause = true;
-
-      if (_iScore > s_iBestScore) {
-        // s_iBestScore = Math.floor(_iScore);
-        s_iBestScore = _iScore;
-        s_iBestScore = Number(s_iBestScore.toFixed(2));
-        saveItem(LOCALSTORAGE_STRING[LOCAL_BEST_SCORE], Math.floor(_iScore));
-        _oInterface.refreshBestScore();
-      }
-      _oInterface.createWinPanel(Math.floor(_iScore));
+      // if (_iScore > s_iBestScore) {
+      //   // s_iBestScore = Math.floor(_iScore);
+      //   s_iBestScore = _iScore;
+      //   s_iBestScore = Number(s_iBestScore.toFixed(2));
+      //   saveItem(LOCALSTORAGE_STRING[LOCAL_BEST_SCORE], _iScore);
+      //   _oInterface.refreshBestScore();
+      // }
+      _oInterface.createWinPanel(_iScore, _iStake);
     }
   };
 
@@ -628,53 +573,25 @@ function CGame(oData) {
       _fTimeSwipe = MS_TIME_SWIPE_START;
     } else {
       _iGameState = STATE_FINISH;
-
-      if (_iScore > s_iBestScore) {
-        // s_iBestScore = Math.floor(_iScore);
-
-        s_iBestScore = _iScore;
-        s_iBestScore = Number(s_iBestScore.toFixed(2));
-        saveItem(LOCALSTORAGE_STRING[LOCAL_BEST_SCORE], Math.floor(_iScore));
-        _oInterface.refreshBestScore();
-      }
-      _oInterface.createWinPanel(Math.floor(_iScore));
+      // if (_iScore > s_iBestScore) {
+      //   s_iBestScore = _iScore;
+      //   s_iBestScore = Number(s_iBestScore.toFixed(2));
+      //   saveItem(LOCALSTORAGE_STRING[LOCAL_BEST_SCORE], _iScore);
+      //   _oInterface.refreshBestScore();
+      // }
+      _oInterface.createWinPanel(_iScore, _iStake);
     }
   };
 
   this.goalAnimation = function (fForce) {
-    if (
-      fForce > FORCE_BALL_DISPLAY_SHOCK[0].min &&
-      fForce < FORCE_BALL_DISPLAY_SHOCK[0].max
-    ) {
-      this.displayShock(
-        INTENSITY_DISPLAY_SHOCK[0].time,
-        INTENSITY_DISPLAY_SHOCK[0].x,
-        INTENSITY_DISPLAY_SHOCK[0].y
-      );
-    } else if (
-      fForce > FORCE_BALL_DISPLAY_SHOCK[1].min &&
-      fForce < FORCE_BALL_DISPLAY_SHOCK[1].max
-    ) {
-      this.displayShock(
-        INTENSITY_DISPLAY_SHOCK[1].time,
-        INTENSITY_DISPLAY_SHOCK[1].x,
-        INTENSITY_DISPLAY_SHOCK[1].y
-      );
-    } else if (
-      fForce > FORCE_BALL_DISPLAY_SHOCK[2].min &&
-      fForce < FORCE_BALL_DISPLAY_SHOCK[2].max
-    ) {
-      this.displayShock(
-        INTENSITY_DISPLAY_SHOCK[2].time,
-        INTENSITY_DISPLAY_SHOCK[2].x,
-        INTENSITY_DISPLAY_SHOCK[2].y
-      );
+    if (fForce > FORCE_BALL_DISPLAY_SHOCK[0].min && fForce < FORCE_BALL_DISPLAY_SHOCK[0].max) {
+      this.displayShock(INTENSITY_DISPLAY_SHOCK[0].time, INTENSITY_DISPLAY_SHOCK[0].x, INTENSITY_DISPLAY_SHOCK[0].y);
+    } else if (fForce > FORCE_BALL_DISPLAY_SHOCK[1].min && fForce < FORCE_BALL_DISPLAY_SHOCK[1].max) {
+      this.displayShock(INTENSITY_DISPLAY_SHOCK[1].time, INTENSITY_DISPLAY_SHOCK[1].x, INTENSITY_DISPLAY_SHOCK[1].y);
+    } else if (fForce > FORCE_BALL_DISPLAY_SHOCK[2].min && fForce < FORCE_BALL_DISPLAY_SHOCK[2].max) {
+      this.displayShock(INTENSITY_DISPLAY_SHOCK[2].time, INTENSITY_DISPLAY_SHOCK[2].x, INTENSITY_DISPLAY_SHOCK[2].y);
     } else if (fForce > FORCE_BALL_DISPLAY_SHOCK[3].min) {
-      this.displayShock(
-        INTENSITY_DISPLAY_SHOCK[3].time,
-        INTENSITY_DISPLAY_SHOCK[3].x,
-        INTENSITY_DISPLAY_SHOCK[3].y
-      );
+      this.displayShock(INTENSITY_DISPLAY_SHOCK[3].time, INTENSITY_DISPLAY_SHOCK[3].x, INTENSITY_DISPLAY_SHOCK[3].y);
     }
   };
 
@@ -758,11 +675,7 @@ function CGame(oData) {
   this.swapChildrenIndex = function () {
     for (var i = 0; i < _aObjects.length - 1; i++) {
       for (var j = i + 1; j < _aObjects.length; j++) {
-        if (
-          _aObjects[i].getObject().visible &&
-          _aObjects[j].getObject().visible
-        )
-          this.sortDepth(_aObjects[i], _aObjects[j]);
+        if (_aObjects[i].getObject().visible && _aObjects[j].getObject().visible) this.sortDepth(_aObjects[i], _aObjects[j]);
       }
     }
   };
@@ -776,13 +689,7 @@ function CGame(oData) {
         if (_bPoleCollide === false) {
           console.log("BALLOUT");
 
-          _oInterface.createAnimText(
-            TEXT_BALL_OUT,
-            90,
-            false,
-            TEXT_COLOR_1,
-            "#fff"
-          );
+          _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, TEXT_COLOR_1, "#ffffff");
 
           playSound("ball_saved", 1, false);
         }
@@ -795,7 +702,7 @@ function CGame(oData) {
       _oPlayer.setVisible(false);
       return;
     }
-
+    _oPlayer.setPosition(CANVAS_WIDTH_HALF - 150 + POSITION_BALL.x * 90, -360);
     _bAnimPlayer = _oPlayer.animPlayer();
     _timerPause = true;
     if (_oPlayer.getFrame() === SHOOT_FRAME) {
@@ -843,13 +750,7 @@ function CGame(oData) {
 
       if (oBallBody.velocity.lengthSquared() < 0.01) {
         _bBallOut = true;
-        _oInterface.createAnimText(
-          TEXT_BALL_OUT,
-          90,
-          false,
-          TEXT_COLOR_1,
-          "#fff"
-        );
+        _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, TEXT_COLOR_1, "#ffffff");
         playSound("ball_saved", 1, false);
       }
     }

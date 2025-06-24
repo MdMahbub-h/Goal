@@ -5,16 +5,14 @@ function CHelpPanel(oParentContainer) {
   var _oParentContainer = oParentContainer;
 
   var _oThis = this;
-  var _oStakePanel;
 
   this._init = function () {
     _oContainer = new createjs.Container();
     _oParentContainer.addChild(_oContainer);
 
     _oFade = new createjs.Shape();
-    _oFade.graphics.beginFill("rgba()").drawRoundRect(380, 420, 600, 200, 10);
+    _oFade.graphics.beginFill("rgba(0,0,0,0.7)").drawRoundRect(380, 420, 600, 200, 10);
     _oFade.alpha = 0.7;
-    _oFade.on("click", function () {});
     _oContainer.addChild(_oFade);
 
     var oTextStroke = new CCTLText(
@@ -26,7 +24,7 @@ function CHelpPanel(oParentContainer) {
       70,
       "center",
       TEXT_COLOR_STROKE,
-      FONT_GAME,
+      GAME_FONT,
       1,
       0,
       0,
@@ -48,7 +46,7 @@ function CHelpPanel(oParentContainer) {
       70,
       "center",
       TEXT_COLOR,
-      FONT_GAME,
+      GAME_FONT,
       1,
       0,
       0,
@@ -59,23 +57,14 @@ function CHelpPanel(oParentContainer) {
       false
     );
 
-    _oButPlay = new CGfxButton(
-      CANVAS_WIDTH / 2,
-      CANVAS_HEIGHT / 2,
-      s_oSpriteLibrary.getSprite("but_continue"),
-      _oContainer
-    );
+    _oButPlay = new CGfxButton(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, s_oSpriteLibrary.getSprite("but_continue"), _oContainer);
     _oButPlay.addEventListener(ON_MOUSE_UP, this._onContinue, this);
   };
 
   this.show = function () {
     _oContainer.alpha = 0;
     _oContainer.visible = true;
-    createjs.Tween.get(_oContainer).to(
-      { alpha: 1 },
-      400,
-      createjs.Ease.quartOut
-    );
+    createjs.Tween.get(_oContainer).to({ alpha: 1 }, 400, createjs.Ease.quartOut);
   };
 
   this.hide = function () {

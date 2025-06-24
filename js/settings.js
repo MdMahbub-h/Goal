@@ -8,8 +8,9 @@ var EDGEBOARD_X = 0;
 var EDGEBOARD_Y = 0;
 
 var DISABLE_SOUND_MOBILE = false;
-var FONT_GAME = "blackplotanregular";
-var SECONDARY_FONT = "blackplotanregular";
+var GAME_FONT = "BlackplotanRegular";
+var SECONDARY_FONT = "BudgeRegular";
+var TERTIARY_FONT = "LeagueSpartanRegular";
 
 var FPS = 30;
 
@@ -57,13 +58,13 @@ var MS_TIME_FADE_HELP_TEXT = 500;
 
 var LOCALSTORAGE_STRING = ["crossbar_challenge_best_score"];
 
-var TEXT_EXCELLENT_COLOR = ["#fff", "#116ee0"];
+var TEXT_EXCELLENT_COLOR = ["#ffffff", "#116ee0"];
 
-var TEXT_COLOR = "#fff";
-var TEXT_COLOR_1 = "#ff2222";
+var TEXT_COLOR = "#ffffff";
+var TEXT_COLOR_1 = "#EB0303";
+var TEXT_COLOR_2 = "#EBB909";
 
 var TEXT_COLOR_STROKE = "#116ee0";
-
 var TEXT_COLOR_STROKE2 = "#6e11e0";
 
 var OUTLINE_WIDTH = 1.5;
@@ -117,11 +118,10 @@ var GOAL_LINE_POS = {
   z: BACK_WALL_GOAL_POSITION.z,
 };
 
-var POSITION_BALL = { x: 0.05, y: 15.4, z: -9 + BALL_RADIUS };
+var POSITION_BALL = { x: 0, y: 18, z: -9 + BALL_RADIUS };
 
 var GOAL_SPRITE_SWAP_Y = GOAL_LINE_POS.y;
-var GOAL_SPRITE_SWAP_Z =
-  BACK_WALL_GOAL_POSITION.z + LEFT_RIGHT_WALL_GOAL_SIZE.height;
+var GOAL_SPRITE_SWAP_Z = BACK_WALL_GOAL_POSITION.z + LEFT_RIGHT_WALL_GOAL_SIZE.height;
 
 var BALL_OUT_X = BACK_WALL_GOAL_SIZE.width + 5;
 var BALL_OUT_Y = BACK_WALL_GOAL_POSITION.y + 3;
@@ -148,11 +148,7 @@ var POLE_RIGHT_LEFT_SIZE = {
   segments: 10,
 };
 
-var COLOR_AREA_GOAL = [
-  0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff, 0xf0f0f0,
-  0x0f0f0f, 0xffbb99, 0xffffff, 0x569910, 0x99dd22, 0x102080, 0x801020,
-  0x899869,
-]; //15
+var COLOR_AREA_GOAL = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff, 0xf0f0f0, 0x0f0f0f, 0xffbb99, 0xffffff, 0x569910, 0x99dd22, 0x102080, 0x801020, 0x899869]; //15
 
 var HIT_BALL_MAX_FORCE = 150; //140;
 var HIT_BALL_MIN_FORCE = 5;
@@ -203,6 +199,6 @@ var NEAR = 1,
 var ENABLE_FULLSCREEN;
 var TIME_SWIPE;
 
-var SOUNDTRACK_VOLUME_IN_GAME = 0.3;
 var OFFSET_Y = 360;
-var CROSSBAR_SCORE = [20, 40, 100, 80, 50, 15, 20, 40, 10];
+var CROSSBAR_SCORE = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+var SOUNDTRACK_VOLUME_IN_GAME = 0.3;

@@ -1,79 +1,107 @@
-root { 
-    display: block;
+root {
+  display: block;
 }
 
-body{
-    background-color: #000;
-    background-repeat: repeat-x;
-    background-position: top;
+body {
+  background-color: #000;
+  background-repeat: repeat-x;
+  background-position: top;
 }
 
-*, *:before, *:after {
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-     
-input, input:before, input:after {
-    -webkit-user-select: initial;
-    -khtml-user-select: initial;
-    -moz-user-select: initial;
-    -ms-user-select: initial;
-    user-select: initial;
+*,
+*:before,
+*:after {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-::selection { background: transparent;color:inherit; }
-::-moz-selection { background: transparent;color:inherit; }
+input,
+input:before,
+input:after {
+  -webkit-user-select: initial;
+  -khtml-user-select: initial;
+  -moz-user-select: initial;
+  -ms-user-select: initial;
+  user-select: initial;
+}
 
-#canvas{
-    position: fixed;
+::selection {
+  background: transparent;
+  color: inherit;
+}
+::-moz-selection {
+  background: transparent;
+  color: inherit;
+}
+
+#canvas {
+  position: fixed;
 }
 
 canvas {
-    image-rendering: optimizeSpeed;
-    image-rendering:-o-crisp-edges;
-    image-rendering:-webkit-optimize-contrast;
-    -ms-interpolation-mode: nearest-neighbor;
-	-ms-touch-action: none;
+  image-rendering: optimizeSpeed;
+  image-rendering: -o-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  -ms-interpolation-mode: nearest-neighbor;
+  -ms-touch-action: none;
 }
 
-.ani_hack{
-    -webkit-perspective: 1000;
-    -webkit-backface-visibility: hidden;
-    
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    outline: none;
-    -webkit-tap-highlight-color: transparent; /* mobile webkit */
+.ani_hack {
+  -webkit-perspective: 1000;
+  -webkit-backface-visibility: hidden;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent; /* mobile webkit */
 }
 
 /***************FONTS*******************/
 
-.check-fonts{
-        position: fixed;
-        opacity:0;
-}
-
-.check-font-1{
-        font-family: 'blackplotanregular';
-}
-                
-                
 @font-face {
-    font-family: 'blackplotanregular';
-    src: url('blackplotan-webfont.eot');
-    src: url('blackplotan-webfont.eot?#iefix') format('embedded-opentype'),
-         url('blackplotan-webfont.woff2') format('woff2'),
-         url('blackplotan-webfont.woff') format('woff'),
-         url('blackplotan-webfont.ttf') format('truetype'),
-         url('blackplotan-webfont.svg#blackplotanregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "BlackplotanRegular";
+  src: url("../fonts/Blackplotan/blackplotan-webfont.eot");
+  src: url("../fonts/Blackplotan/blackplotan-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/Blackplotan/blackplotan-webfont.woff2") format("woff2"),
+    url("../fonts/Blackplotan/blackplotan-webfont.woff") format("woff"), url("../fonts/Blackplotan/blackplotan-webfont.ttf") format("truetype"),
+    url("../fonts/Blackplotan/blackplotan-webfont.svg#blackplotanregular") format("svg");
+  font-style: normal;
+  font-weight: normal;
+}
 
+@font-face {
+  font-family: "BudgeRegular";
+  src: url("../fonts/Budge-Font/Budge-Regular.otf");
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "LeagueSpartanRegular";
+  src: url("../fonts/League-Spartan-Font/static/LeagueSpartan-Regular.ttf");
+  font-style: normal;
+  font-weight: normal;
+}
+
+.check-fonts {
+  position: fixed;
+  opacity: 0;
+}
+
+.check-font-1 {
+  font-family: "LeagueSpartanRegular";
+}
+
+.check-font-2 {
+  font-family: "BudgeRegular";
+}
+
+.check-font-3 {
+  font-family: "LeagueSpartanRegular";
 }

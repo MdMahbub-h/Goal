@@ -1,25 +1,12 @@
-function CPoleHighlight(
-  bHorizontal,
-  bLeft,
-  iX,
-  iY,
-  sztext,
-  oSprite,
-  oParentContainer
-) {
+function CPoleHighlight(bHorizontal, bLeft, iX, iY, sztext, oSprite, oParentContainer) {
   var _bHorizontal = bHorizontal;
   var _bLeft = bLeft;
   var _iStep = 0;
   var _oHighlight;
   var _oText;
-  var _oTextStroke;
   var _oContainer;
   var _oParentContainer = oParentContainer;
   var _szText = sztext;
-
-  setTimeout(() => {
-    _szText = 300;
-  }, 1000);
 
   var _oThis = this;
 
@@ -52,52 +39,11 @@ function CPoleHighlight(
     }
     _oContainer.addChild(oArrow);
 
-    _oTextStroke = new CCTLText(
-      _oContainer,
-      oArrow.x - 40,
-      oArrow.y - 40,
-      80,
-      30,
-      70,
-      "center",
-      TEXT_COLOR_STROKE,
-      FONT_GAME,
-      1,
-      0,
-      0,
-      szText,
-      true,
-      true,
-      false,
-      false
-    );
-
-    _oTextStroke.setOutline(4);
-
-    _oText = new CCTLText(
-      _oContainer,
-      oArrow.x - 40,
-      oArrow.y - 40,
-      80,
-      30,
-      70,
-      "center",
-      TEXT_COLOR,
-      FONT_GAME,
-      1,
-      0,
-      0,
-      szText,
-      true,
-      true,
-      false,
-      false
-    );
+    _oText = new CCTLText(_oContainer, oArrow.x - 40, oArrow.y - 50, 80, 30, 70, "center", TEXT_COLOR, GAME_FONT, 1, 0, 0, szText, true, true, false, false);
   };
 
   this.updateText = function (text) {
     _oText.refreshText(text);
-    _oTextStroke.refreshText(text);
   };
 
   this.highlightAnim = function () {

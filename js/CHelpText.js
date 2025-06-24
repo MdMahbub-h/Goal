@@ -1,34 +1,11 @@
 function CHelpText(oParentContainer) {
   var _oParentContainer = oParentContainer;
   var _oHelpText;
-  var _oHelpTextStroke;
   var _oContainer;
 
   this._init = function () {
     _oContainer = new createjs.Container();
     _oParentContainer.addChild(_oContainer);
-
-    _oHelpTextStroke = new CCTLText(
-      _oContainer,
-      CANVAS_WIDTH / 2 - 300,
-      CANVAS_HEIGHT_HALF - 10,
-      600,
-      70,
-      70,
-      "center",
-      TEXT_COLOR_STROKE,
-      FONT_GAME,
-      1,
-      0,
-      0,
-      TEXT_HELP,
-      true,
-      true,
-      false,
-      false
-    );
-
-    _oHelpTextStroke.setOutline(4);
 
     _oHelpText = new CCTLText(
       _oContainer,
@@ -39,7 +16,7 @@ function CHelpText(oParentContainer) {
       70,
       "center",
       TEXT_COLOR,
-      FONT_GAME,
+      SECONDARY_FONT,
       1,
       0,
       0,
