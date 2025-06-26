@@ -1,4 +1,4 @@
-var CANVAS_WIDTH = 1360;
+var CANVAS_WIDTH = 1080;
 var CANVAS_HEIGHT = 1360;
 
 var CANVAS_WIDTH_HALF = CANVAS_WIDTH * 0.5;
@@ -61,8 +61,8 @@ var LOCALSTORAGE_STRING = ["crossbar_challenge_best_score"];
 var TEXT_EXCELLENT_COLOR = ["#ffffff", "#116ee0"];
 
 var TEXT_COLOR = "#ffffff";
-var TEXT_COLOR_1 = "#EB0303";
-var TEXT_COLOR_2 = "#EBB909";
+var GAME_COLOR_1 = "#EB0303";
+var GAME_COLOR_2 = "#EBB909";
 
 var TEXT_COLOR_STROKE = "#116ee0";
 var TEXT_COLOR_STROKE2 = "#6e11e0";

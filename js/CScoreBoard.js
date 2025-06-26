@@ -16,11 +16,11 @@ function CScoreBoard(oParentContainer) {
     _oContainer.y = _pContainerPos.y;
     _oParentContainer.addChild(_oContainer);
 
-    _oScoreText = new createjs.Text("SCORE ", "40px " + GAME_FONT, TEXT_COLOR_1);
+    _oScoreText = new createjs.Text("SCORE ", "40px " + GAME_FONT, GAME_COLOR_1);
     _oScoreText.textAlign = "left";
     _oContainer.addChild(_oScoreText);
 
-    _oPointText = new createjs.Text(0, "40px " + GAME_FONT, TEXT_COLOR_1);
+    _oPointText = new createjs.Text(0, "40px " + GAME_FONT, GAME_COLOR_1);
     _oPointText.textAlign = "left";
     _oPointText.x = 400;
     _oContainer.addChild(_oPointText);

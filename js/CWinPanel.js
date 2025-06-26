@@ -26,10 +26,10 @@ function CWinPanel(oParentContainer) {
 
   this.show = function (iScore, iStake) {
     if (iScore >= iStake) {
-      _oTitleText.setColor(TEXT_COLOR_2);
+      _oTitleText.setColor(GAME_COLOR_2);
       _oTitleText.refreshText("Game Won");
     } else {
-      _oTitleText.setColor(TEXT_COLOR_1);
+      _oTitleText.setColor(GAME_COLOR_1);
       _oTitleText.refreshText("Game Lost");
     }
     _oContainer.visible = true;

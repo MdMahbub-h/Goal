@@ -19,23 +19,23 @@ function CPlayerAndHitBoard(oParentContainer) {
     _oPlayers = this.getRandomIntBetween(100, 2_000);
     _oHits = this.getRandomIntBetween(2_001, 5_000_000);
 
-    _oPlayersText = new createjs.Text("PLAYERS", "40px " + GAME_FONT, TEXT_COLOR_2);
+    _oPlayersText = new createjs.Text("PLAYERS", "40px " + GAME_FONT, GAME_COLOR_2);
     _oPlayersText.textAlign = "left";
     _oPlayersText.y = 0;
     _oContainer.addChild(_oPlayersText);
 
-    _oPlayersSText = new createjs.Text(_oPlayers, "40px " + GAME_FONT, TEXT_COLOR_2);
+    _oPlayersSText = new createjs.Text(_oPlayers, "40px " + GAME_FONT, GAME_COLOR_2);
     _oPlayersSText.textAlign = "left";
     _oPlayersSText.y = 0;
     _oPlayersSText.x = 400;
     _oContainer.addChild(_oPlayersSText);
 
-    _oHitText = new createjs.Text("HITS", "40px " + GAME_FONT, TEXT_COLOR_1);
+    _oHitText = new createjs.Text("HITS", "40px " + GAME_FONT, GAME_COLOR_1);
     _oHitText.y = 50;
     _oHitText.textAlign = "left";
     _oContainer.addChild(_oHitText);
 
-    _oHitSText = new createjs.Text(_oHits, "40px " + GAME_FONT, TEXT_COLOR_1);
+    _oHitSText = new createjs.Text(_oHits, "40px " + GAME_FONT, GAME_COLOR_1);
     _oHitSText.textAlign = "left";
     _oHitSText.y = 50;
     _oHitSText.x = 400;

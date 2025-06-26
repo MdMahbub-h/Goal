@@ -17,11 +17,11 @@ function CStakeBoard(oParentContainer) {
     _oContainer.y = _pContainerPos.y;
     _oParentContainer.addChild(_oContainer);
 
-    _oStakeText = new createjs.Text("STAKE", "40px " + GAME_FONT, TEXT_COLOR_2);
+    _oStakeText = new createjs.Text("STAKE", "40px " + GAME_FONT, GAME_COLOR_2);
     _oStakeText.textAlign = "left";
     _oContainer.addChild(_oStakeText);
 
-    _oPointText = new createjs.Text(0, "40px " + GAME_FONT, TEXT_COLOR_2);
+    _oPointText = new createjs.Text(0, "40px " + GAME_FONT, GAME_COLOR_2);
     _oPointText.textAlign = "left";
     _oPointText.x = 400;
     _oContainer.addChild(_oPointText);

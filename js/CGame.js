@@ -50,6 +50,8 @@ function CGame(oData) {
   var _bPointScored;
   var _oStakePanel;
 
+  var _oAdPanel;
+
   this._init = function () {
     $(s_oMain).trigger("start_session");
 
@@ -62,7 +64,11 @@ function CGame(oData) {
     _oContainerGame = new createjs.Container();
     s_oStage.addChild(_oContainerGame);
 
-    _oBg = createBitmap(s_oSpriteLibrary.getSprite("bg_game"));
+    var _oBgSprite = s_oSpriteLibrary.getSprite("bg_game");
+    _oBg = createBitmap(_oBgSprite);
+    _oBg.scale = 1.46;
+    _oBg.x = -254;
+    _oBg.y = -305;
     _oBg.cache(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     _oContainerGame.addChild(_oBg);
 
@@ -75,11 +81,14 @@ function CGame(oData) {
     }
 
     var oSprite = s_oSpriteLibrary.getSprite("goal");
-    _oGoal = new CGoal(295, 10 + OFFSET_Y, oSprite, _oContainerGame);
+    _oGoal = new CGoal(CANVAS_WIDTH / 2 - oSprite.width / 2, 10 + OFFSET_Y, oSprite, _oContainerGame);
 
     var oSpriteBall = s_oSpriteLibrary.getSprite("ball");
     _oBall = new CBall(0, 0, oSpriteBall, _oScene.ballBody(), _oContainerGame);
     _aObjects.push(_oBall);
+
+    var _oAdSprite = s_oSpriteLibrary.getSprite("banner_ad");
+    _oAdPanel = new CAdPanel(CANVAS_WIDTH / 2, 90, 500, 160, _oAdSprite, "https://ownthechain.io", _oContainerGame);
 
     this.ballPosition();
 
@@ -418,7 +427,7 @@ function CGame(oData) {
       _bGoal = true;
       _fTimeReset = TIME_RESET_AFTER_GOAL;
 
-      _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, TEXT_COLOR_1, "#ffffff");
+      _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, GAME_COLOR_1, "#ffffff");
     }
   };
 
@@ -687,10 +696,7 @@ function CGame(oData) {
         _bBallOut = true;
         _fTimeReset = TIME_RESET_AFTER_BALL_OUT;
         if (_bPoleCollide === false) {
-          console.log("BALLOUT");
-
-          _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, TEXT_COLOR_1, "#ffffff");
-
+          _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, GAME_COLOR_1, "#ffffff");
           playSound("ball_saved", 1, false);
         }
       }
@@ -750,7 +756,7 @@ function CGame(oData) {
 
       if (oBallBody.velocity.lengthSquared() < 0.01) {
         _bBallOut = true;
-        _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, TEXT_COLOR_1, "#ffffff");
+        _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, GAME_COLOR_1, "#ffffff");
         playSound("ball_saved", 1, false);
       }
     }

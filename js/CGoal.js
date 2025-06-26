@@ -13,7 +13,6 @@ function CGoal(iX, iY, oSprite, oParentContainer) {
 
     _oGoal = createBitmap(oSprite);
     this.setPosition(iX, iY);
-
     _oContainer.addChild(_oGoal);
 
     _aCrossBarHighlights = new Array();

@@ -10,11 +10,12 @@ function CMenu() {
 
   this._init = function () {
     _oBg = createBitmap(s_oSpriteLibrary.getSprite("bg_menu"));
+    _oBg.cache(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     s_oStage.addChild(_oBg);
 
-    const _backdrop = new createjs.Shape();
-    _backdrop.graphics.beginFill("rgba(0,0,0,0.5)").drawRect(0, CANVAS_HEIGHT - 230, CANVAS_WIDTH, 230);
-    s_oStage.addChild(_backdrop);
+    // const _backdrop = new createjs.Shape();
+    // _backdrop.graphics.beginFill("rgba(0,0,0,0.5)").drawRect(0, CANVAS_HEIGHT - 230, CANVAS_WIDTH, 230);
+    // s_oStage.addChild(_backdrop);
 
     var oSprite = s_oSpriteLibrary.getSprite("but_play");
     _oButPlay = new CGfxButton(0, 0, oSprite);
@@ -75,7 +76,7 @@ function CMenu() {
     //   _oButPlay.setY(CANVAS_HEIGHT / 2 + 200);
     // } else {
     _oButPlay.setX(CANVAS_WIDTH / 2);
-    _oButPlay.setY(CANVAS_HEIGHT - 115);
+    _oButPlay.setY(CANVAS_HEIGHT / 2 + 55);
     // }
   };
 

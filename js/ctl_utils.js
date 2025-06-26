@@ -17,15 +17,11 @@ var s_fInverseScaling = 0;
     /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|e\-|e\/|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(di|rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|xda(\-|2|g)|yas\-|your|zeto|zte\-/i.test(
       a.substr(0, 4)
     );
-})(navigator.userAgent || navigator.vendor || window.opera);
+})(navigator.userAgent || window.opera);
 
 $(window).resize(function () {
   sizeHandler();
 });
-
-function trace(szMsg) {
-  console.log(szMsg);
-}
 
 function isChrome() {
   var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
@@ -46,25 +42,21 @@ function isMobile() {
   if (isIpad()) {
     return true;
   }
-
   return jQuery.browser.mobile;
 }
 
 function isIOS() {
   var iDevices = ["iPad Simulator", "iPhone Simulator", "iPod Simulator", "iPad", "iPhone", "iPod"];
-
   if (navigator.userAgent.toLowerCase().indexOf("iphone") !== -1) {
     s_bIsIphone = true;
     return true;
   }
-
   while (iDevices.length) {
     if (navigator.platform === iDevices.pop()) {
       return true;
     }
   }
   s_bIsIphone = false;
-
   return false;
 }
 
@@ -91,7 +83,6 @@ function getSize(Name) {
     size = documentElement["client" + Name];
   } else if (window["inner" + Name] != documentElement["client" + Name]) {
     // WebKit doesn't include scrollbars while calculating viewport size so we have to get fancy
-
     // Insert markup to test if a media query will match document.doumentElement["client" + Name]
     var bodyElement = document.createElement("body");
     bodyElement.id = "vpw-test-b";
@@ -118,6 +109,7 @@ function getSize(Name) {
   }
   return size;
 }
+
 function getIOSWindowHeight() {
   // Get zoom level of mobile Safari
   // Note, that such zoom detection might not work correctly in other browsers
@@ -127,29 +119,30 @@ function getIOSWindowHeight() {
   // We multiply it by zoom and get out real height.
   return window.innerHeight * zoomLevel;
 }
+
 // You can also get height of the toolbars that are currently displayed
 function getHeightOfIOSToolbars() {
   var tH = (window.orientation === 0 ? screen.height : screen.width) - getIOSWindowHeight();
   return tH > 1 ? tH : 0;
 }
-//THIS FUNCTION MANAGES THE CANVAS SCALING TO FIT PROPORTIONALLY THE GAME TO THE CURRENT DEVICE RESOLUTION
 
+//THIS FUNCTION MANAGES THE CANVAS SCALING TO FIT PROPORTIONALLY THE GAME TO THE CURRENT DEVICE RESOLUTION
 function sizeHandler() {
   window.scrollTo(0, 0);
   if (!$("#canvas")) {
     return;
   }
-  var h;
+  var width = getSize("Width");
+  var height;
   if (platform.name.toLowerCase() === "safari") {
-    h = getIOSWindowHeight();
+    height = getIOSWindowHeight();
   } else {
-    h = getSize("Height");
+    height = getSize("Height");
   }
 
-  var w = getSize("Width");
-  var multiplier = Math.min(h / CANVAS_HEIGHT, w / CANVAS_WIDTH);
+  var multiplier = Math.min(height / CANVAS_HEIGHT, width / CANVAS_WIDTH);
 
-  if (w > h) {
+  if (width > height) {
     //LANDSCAPE
     EDGEBOARD_X = 0;
     EDGEBOARD_Y = 330;
@@ -163,25 +156,15 @@ function sizeHandler() {
   var destW = Math.round(CANVAS_WIDTH * multiplier);
   var destH = Math.round(CANVAS_HEIGHT * multiplier);
 
-  var iAdd = 0;
-  if (destH < h) {
-    iAdd = h - destH;
-    destH += iAdd;
-    destW += iAdd * (CANVAS_WIDTH / CANVAS_HEIGHT);
-  } else if (destW < w) {
-    iAdd = w - destW;
-    destW += iAdd;
-    destH += iAdd * (CANVAS_HEIGHT / CANVAS_WIDTH);
-  }
-  var fOffsetY = h / 2 - destH / 2;
-  var fOffsetX = w / 2 - destW / 2;
+  var fOffsetY = height / 2 - destH / 2;
+  var fOffsetX = width / 2 - destW / 2;
   var fGameInverseScaling = CANVAS_WIDTH / destW;
   if (fOffsetX * fGameInverseScaling < -EDGEBOARD_X || fOffsetY * fGameInverseScaling < -EDGEBOARD_Y) {
-    multiplier = Math.min(h / (CANVAS_HEIGHT - EDGEBOARD_Y * 2), w / (CANVAS_WIDTH - EDGEBOARD_X * 2));
+    multiplier = Math.min(height / (CANVAS_HEIGHT - EDGEBOARD_Y * 2), width / (CANVAS_WIDTH - EDGEBOARD_X * 2));
     destW = CANVAS_WIDTH * multiplier;
     destH = CANVAS_HEIGHT * multiplier;
-    fOffsetY = (h - destH) / 2;
-    fOffsetX = (w - destW) / 2;
+    fOffsetY = (height - destH) / 2;
+    fOffsetX = (width - destW) / 2;
 
     fGameInverseScaling = CANVAS_WIDTH / destW;
   }
@@ -222,7 +205,7 @@ function sizeHandler() {
     $("#canvas").css("top", fOffsetY + "px");
   } else {
     // centered game
-    fOffsetY = (h - destH) / 2;
+    fOffsetY = (height - destH) / 2;
     $("#canvas").css("top", fOffsetY + "px");
   }
 
@@ -243,7 +226,6 @@ function resizeCanvas3D() {
     if ($(this).attr("id") == "#canvas") {
       return;
     }
-
     if (s_bMobile || isChrome()) {
       $(this).css("width", $("#canvas").css("width"));
       $(this).css("height", $("#canvas").css("height"));
@@ -477,6 +459,7 @@ NoClickDelay.prototype = {
     }
   },
 };
+
 (function () {
   var hidden = "hidden";
   // Standards:
@@ -577,6 +560,7 @@ function normalize(o, len) {
   }
   return o;
 }
+
 function length(o) {
   return Math.sqrt(o.x * o.x + o.y * o.y);
 }
@@ -650,6 +634,7 @@ function rotateVector2D(iAngle, o) {
 
   return { x: iX, y: iY, z: 0 };
 }
+
 Math.radians = function (degrees) {
   return (degrees * Math.PI) / 180;
 };

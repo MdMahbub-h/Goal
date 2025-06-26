@@ -153,31 +153,22 @@ function CMain(oData) {
     s_oSpriteLibrary.init(this._onImagesLoaded, this._onAllImagesLoaded, this);
 
     s_oSpriteLibrary.addSprite("but_play", "./sprites/but_play1.png");
-    s_oSpriteLibrary.addSprite("but_exit", "./sprites/but_exit.png");
     s_oSpriteLibrary.addSprite("bg_menu", "./sprites/bg_menu2.jpg");
-    s_oSpriteLibrary.addSprite("bg_game", "./sprites/bg_game3.jpg");
-    s_oSpriteLibrary.addSprite("msg_box", "./sprites/msg_box.png");
-    s_oSpriteLibrary.addSprite("audio_icon", "./sprites/audio_icon.png");
-    s_oSpriteLibrary.addSprite("but_home", "./sprites/but_home.png");
-    s_oSpriteLibrary.addSprite("but_restart", "./sprites/but_restart.png");
+    s_oSpriteLibrary.addSprite("bg_game", "./sprites/bg_game2.jpg");
+    s_oSpriteLibrary.addSprite("banner_ad", "./sprites/banner_ad.png");
     s_oSpriteLibrary.addSprite("but_fullscreen", "./sprites/but_fullscreen1.png");
     s_oSpriteLibrary.addSprite("ball", "./sprites/ball.png");
-    s_oSpriteLibrary.addSprite("but_continue", "./sprites/but_continue.png");
-    s_oSpriteLibrary.addSprite("but_yes", "./sprites/but_yes.png");
-    s_oSpriteLibrary.addSprite("but_no", "./sprites/but_no.png");
-    s_oSpriteLibrary.addSprite("but_info", "./sprites/but_info.png");
-    s_oSpriteLibrary.addSprite("but_pause", "./sprites/but_pause.png");
     s_oSpriteLibrary.addSprite("ball_shadow", "./sprites/ball_shadow.png");
     s_oSpriteLibrary.addSprite("start_ball", "./sprites/start_ball.png");
     s_oSpriteLibrary.addSprite("hand_touch", "./sprites/hand_touch.png");
     s_oSpriteLibrary.addSprite("cursor", "./sprites/cursor.png");
-    s_oSpriteLibrary.addSprite("boot_ball", "./sprites/boot_ball.png");
     s_oSpriteLibrary.addSprite("goal", "./sprites/goal2.png");
-    s_oSpriteLibrary.addSprite("horizontal_angle_left", "./sprites/horizontal_angle_left.png");
-    s_oSpriteLibrary.addSprite("horizontal_angle_right", "./sprites/horizontal_angle_right.png");
+    s_oSpriteLibrary.addSprite("boot_ball", "./sprites/boot_ball.png");
+    s_oSpriteLibrary.addSprite("target_arrow", "./sprites/target_arrow.png");
     s_oSpriteLibrary.addSprite("horizontal_orange", "./sprites/horizontal_orange.png");
     s_oSpriteLibrary.addSprite("horizontal_yellow", "./sprites/horizontal_yellow.png");
-    s_oSpriteLibrary.addSprite("target_arrow", "./sprites/target_arrow.png");
+    s_oSpriteLibrary.addSprite("horizontal_angle_left", "./sprites/horizontal_angle_left.png");
+    s_oSpriteLibrary.addSprite("horizontal_angle_right", "./sprites/horizontal_angle_right.png");
 
     for (var i = 0; i < NUM_SPRITE_PLAYER; i++) {
       s_oSpriteLibrary.addSprite("player_" + i, "./sprites/player/player_" + i + ".png");
@@ -283,6 +274,7 @@ function CMain(oData) {
 
   this.initContainer();
 }
+
 var s_bMobile;
 var s_bAudioActive = true;
 var s_bFullscreen = false;
