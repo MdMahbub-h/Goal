@@ -1,20 +1,15 @@
 function CInterface() {
   var _pStartPosFullscreen;
-
   var _oButFullscreen;
-
   var _oWinPanel = null;
-  var _oScoreBoard;
-  var _oPlayerAndHitBoard;
-  var _oLaunchBoard;
   var _oHelpText;
+  var _oStatsBoard;
 
   var _iStep;
   var _iScore;
   var _iStake;
-  var _fRequestFullScreen = null;
   var _fCancelFullScreen = null;
-  var _oStakeBoard;
+  var _fRequestFullScreen = null;
 
   this._init = function () {
     var doc = window.document;
@@ -36,17 +31,7 @@ function CInterface() {
       _oButFullscreen.addEventListener(ON_MOUSE_UP, this._onFullscreen, this);
     }
 
-    const _backdrop = new createjs.Shape();
-    _backdrop.graphics.beginFill("rgba(0,0,0,0.5)").drawRect(0, CANVAS_HEIGHT - 230, CANVAS_WIDTH, 230);
-    s_oStage.addChild(_backdrop);
-
-    _oStakeBoard = new CStakeBoard(s_oStage);
-    _oScoreBoard = new CScoreBoard(s_oStage);
-    _oPlayerAndHitBoard = new CPlayerAndHitBoard(s_oStage);
-    _oLaunchBoard = new CLaunchBoard(s_oStage);
-
-    // _oHelpPanel = new CHelpPanel(s_oStage);
-    // _oHelpPanel.show();
+    _oStatsBoard = new CStatsBoard(s_oStage);
 
     s_oGame.onExitHelp();
 
@@ -54,16 +39,6 @@ function CInterface() {
   };
 
   this.refreshButtonPos = function (iNewX, iNewY) {
-    var oPosScoreBoard = _oScoreBoard.getStartPosScore();
-    _oScoreBoard.setPosScore(oPosScoreBoard.x + iNewX, oPosScoreBoard.y - iNewY);
-    var oPosStakeBoard = _oStakeBoard.getStartPosScore();
-    _oStakeBoard.setPosScore(oPosStakeBoard.x + iNewX, oPosStakeBoard.y - iNewY);
-    var oPlayerAndHitBoard = _oPlayerAndHitBoard.getStartPosScore();
-    _oPlayerAndHitBoard.setPosScore(oPlayerAndHitBoard.x + iNewX, oPlayerAndHitBoard.y - iNewY);
-
-    var oPosLaunchBoard = _oLaunchBoard.getStartPos();
-    _oLaunchBoard.setPos(oPosLaunchBoard.x - iNewX, oPosLaunchBoard.y - iNewY);
-
     if (_fRequestFullScreen && screenfull.isEnabled) {
       _oButFullscreen.setPosition(_pStartPosFullscreen.x + iNewX, _pStartPosFullscreen.y + iNewY);
     }
@@ -81,9 +56,6 @@ function CInterface() {
       _oButFullscreen.unload();
       _oButFullscreen = null;
     }
-
-    // _oHelpPanel.unload();
-
     s_oInterface = null;
   };
 
@@ -99,14 +71,13 @@ function CInterface() {
 
   this.refreshTextScoreBoard = function (iScore, fMultiplier, iScoreNoMult, bEffect) {
     _iScore = iScore;
-    _oScoreBoard.refreshTextScore(iScore);
-    if (bEffect) _oScoreBoard.effectAddScore(iScoreNoMult, fMultiplier);
+    _oStatsBoard.refreshTextScore(iScore);
+    if (bEffect) _oStatsBoard.effectAddScore(iScoreNoMult, fMultiplier);
   };
 
   this.refreshTextStakeBoard = function (iStake, fMultiplier, iScoreNoMult, bEffect) {
     _iStake = iStake;
-    _oStakeBoard.refreshTextStake(iStake);
-    if (bEffect) _oScoreBoard.effectAddScore(iScoreNoMult, fMultiplier);
+    _oStatsBoard.refreshTextStake(iStake);
   };
 
   this.resetFullscreenBut = function () {
@@ -168,7 +139,7 @@ function CInterface() {
   };
 
   this.refreshLaunchBoard = function (iLaunch, iMaxLaunch) {
-    _oLaunchBoard.refreshTextLaunch(iLaunch, iMaxLaunch);
+    _oStatsBoard.refreshTextLaunch(iLaunch, iMaxLaunch);
   };
 
   s_oInterface = this;

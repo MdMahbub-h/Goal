@@ -14,10 +14,10 @@ function CStakePanel(oParentContainer) {
   this._init = function () {
     _oContainer = new createjs.Container();
     _oContainer.x = CANVAS_WIDTH / 2;
-    _oContainer.y = CANVAS_HEIGHT / 2;
+    _oContainer.y = CANVAS_HEIGHT / 2 + 60;
     _oParentContainer.addChild(_oContainer);
 
-    var oText = new CCTLText(_oContainer, -220, -205, 440, 200, 70, "center", TEXT_COLOR, SECONDARY_FONT, 1, 0, 0, "Place A\nStake", true, true, true, false);
+    var oText = new CCTLText(_oContainer, -220, -220, 440, 200, 70, "center", TEXT_COLOR, SECONDARY_FONT, 1, 0, 0, "Place A\nStake", true, true, true, false);
 
     _oBackground = new createjs.Shape();
     _oBackground.graphics.beginFill("#ffffff").drawRoundRect(-340, 160, 680, 240, 30);

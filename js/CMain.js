@@ -152,19 +152,22 @@ function CMain(oData) {
   this._loadImages = function () {
     s_oSpriteLibrary.init(this._onImagesLoaded, this._onAllImagesLoaded, this);
 
-    s_oSpriteLibrary.addSprite("but_play", "./sprites/but_play1.png");
-    s_oSpriteLibrary.addSprite("bg_menu", "./sprites/bg_menu2.jpg");
-    s_oSpriteLibrary.addSprite("bg_game", "./sprites/bg_game2.jpg");
-    s_oSpriteLibrary.addSprite("banner_ad", "./sprites/banner_ad.png");
-    s_oSpriteLibrary.addSprite("but_fullscreen", "./sprites/but_fullscreen1.png");
+    if (settings && settings.ad_src) {
+      s_oSpriteLibrary.addSprite("banner_ad", settings.ad_src);
+    }
+
     s_oSpriteLibrary.addSprite("ball", "./sprites/ball.png");
-    s_oSpriteLibrary.addSprite("ball_shadow", "./sprites/ball_shadow.png");
+    s_oSpriteLibrary.addSprite("bg_menu", "./sprites/bg_menu3.jpg");
+    s_oSpriteLibrary.addSprite("bg_game", "./sprites/bg_game3.jpg");
+    s_oSpriteLibrary.addSprite("but_play", "./sprites/but_play1.png");
     s_oSpriteLibrary.addSprite("start_ball", "./sprites/start_ball.png");
     s_oSpriteLibrary.addSprite("hand_touch", "./sprites/hand_touch.png");
-    s_oSpriteLibrary.addSprite("cursor", "./sprites/cursor.png");
+    s_oSpriteLibrary.addSprite("ball_shadow", "./sprites/ball_shadow.png");
     s_oSpriteLibrary.addSprite("goal", "./sprites/goal2.png");
+    s_oSpriteLibrary.addSprite("cursor", "./sprites/cursor.png");
     s_oSpriteLibrary.addSprite("boot_ball", "./sprites/boot_ball.png");
     s_oSpriteLibrary.addSprite("target_arrow", "./sprites/target_arrow.png");
+    s_oSpriteLibrary.addSprite("but_fullscreen", "./sprites/but_fullscreen1.png");
     s_oSpriteLibrary.addSprite("horizontal_orange", "./sprites/horizontal_orange.png");
     s_oSpriteLibrary.addSprite("horizontal_yellow", "./sprites/horizontal_yellow.png");
     s_oSpriteLibrary.addSprite("horizontal_angle_left", "./sprites/horizontal_angle_left.png");

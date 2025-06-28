@@ -159,13 +159,13 @@ function sizeHandler() {
   var fOffsetY = height / 2 - destH / 2;
   var fOffsetX = width / 2 - destW / 2;
   var fGameInverseScaling = CANVAS_WIDTH / destW;
+
   if (fOffsetX * fGameInverseScaling < -EDGEBOARD_X || fOffsetY * fGameInverseScaling < -EDGEBOARD_Y) {
     multiplier = Math.min(height / (CANVAS_HEIGHT - EDGEBOARD_Y * 2), width / (CANVAS_WIDTH - EDGEBOARD_X * 2));
     destW = CANVAS_WIDTH * multiplier;
     destH = CANVAS_HEIGHT * multiplier;
     fOffsetY = (height - destH) / 2;
     fOffsetX = (width - destW) / 2;
-
     fGameInverseScaling = CANVAS_WIDTH / destW;
   }
 

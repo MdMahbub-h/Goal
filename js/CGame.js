@@ -66,9 +66,9 @@ function CGame(oData) {
 
     var _oBgSprite = s_oSpriteLibrary.getSprite("bg_game");
     _oBg = createBitmap(_oBgSprite);
-    _oBg.scale = 1.46;
-    _oBg.x = -254;
-    _oBg.y = -305;
+    _oBg.scale = 1.28;
+    _oBg.x = -154;
+    _oBg.y = -450;
     _oBg.cache(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     _oContainerGame.addChild(_oBg);
 
@@ -81,14 +81,16 @@ function CGame(oData) {
     }
 
     var oSprite = s_oSpriteLibrary.getSprite("goal");
-    _oGoal = new CGoal(CANVAS_WIDTH / 2 - oSprite.width / 2, 10 + OFFSET_Y, oSprite, _oContainerGame);
+    _oGoal = new CGoal(CANVAS_WIDTH / 2 - oSprite.width / 2, 190 + OFFSET_Y, oSprite, _oContainerGame);
 
     var oSpriteBall = s_oSpriteLibrary.getSprite("ball");
     _oBall = new CBall(0, 0, oSpriteBall, _oScene.ballBody(), _oContainerGame);
     _aObjects.push(_oBall);
 
-    var _oAdSprite = s_oSpriteLibrary.getSprite("banner_ad");
-    _oAdPanel = new CAdPanel(CANVAS_WIDTH / 2, 90, 500, 160, _oAdSprite, "https://ownthechain.io", _oContainerGame);
+    if (settings && settings.ad_src) {
+      var _oAdSprite = s_oSpriteLibrary.getSprite("banner_ad");
+      _oAdPanel = new CAdPanel(CANVAS_WIDTH / 2, 120, 700, 180, _oAdSprite, settings.ad_url, _oContainerGame);
+    }
 
     this.ballPosition();
 
@@ -239,7 +241,7 @@ function CGame(oData) {
     _iScore += iAmount * _iStake;
     _oInterface.refreshTextScoreBoard(_iScore, 1, 0, false);
 
-    _oInterface.createAnimText(TEXT_CONGRATULATION[iIndex], 120, false, TEXT_COLOR, "#116ee0");
+    _oInterface.createAnimText(TEXT_CONGRATULATION[iIndex], 120, false, GAME_COLOR_2);
   };
 
   this.fieldCollision = function () {
@@ -427,7 +429,7 @@ function CGame(oData) {
       _bGoal = true;
       _fTimeReset = TIME_RESET_AFTER_GOAL;
 
-      _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, GAME_COLOR_1, "#ffffff");
+      _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, GAME_COLOR_1);
     }
   };
 
@@ -696,7 +698,7 @@ function CGame(oData) {
         _bBallOut = true;
         _fTimeReset = TIME_RESET_AFTER_BALL_OUT;
         if (_bPoleCollide === false) {
-          _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, GAME_COLOR_1, "#ffffff");
+          _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, GAME_COLOR_1);
           playSound("ball_saved", 1, false);
         }
       }
@@ -708,7 +710,7 @@ function CGame(oData) {
       _oPlayer.setVisible(false);
       return;
     }
-    _oPlayer.setPosition(CANVAS_WIDTH_HALF - 150 + POSITION_BALL.x * 90, -360);
+    _oPlayer.setPosition(CANVAS_WIDTH_HALF - 150 + POSITION_BALL.x * 80, -100);
     _bAnimPlayer = _oPlayer.animPlayer();
     _timerPause = true;
     if (_oPlayer.getFrame() === SHOOT_FRAME) {
@@ -756,7 +758,7 @@ function CGame(oData) {
 
       if (oBallBody.velocity.lengthSquared() < 0.01) {
         _bBallOut = true;
-        _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, GAME_COLOR_1, "#ffffff");
+        _oInterface.createAnimText(TEXT_BALL_OUT, 90, false, GAME_COLOR_1);
         playSound("ball_saved", 1, false);
       }
     }
